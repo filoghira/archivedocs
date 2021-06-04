@@ -32,6 +32,7 @@ public class Startup {
             //Release connection
             try {
                 if (conn != null) {
+                    //aggiunta istruzione SQL
                     conn.close();
                     conn = null;
                 }
