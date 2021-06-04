@@ -4,40 +4,27 @@ import java.sql.*;
 
 public class Startup {
 
-    static String driver = "org.apache.derby.jdbc.EmbeddedDriver";
     static String protocol = "jdbc:derby:";
 
-    public static boolean init(String userName, String password){
+    public static Connection init(String userName, String password){
 
         Connection conn = null;
 
         try{
 
-            String dbName = userName;
             String homePath = GeneralUtils.HomeDir.homePath();
 
-            conn = DriverManager.getConnection(protocol + homePath + "\\" + dbName
+            conn = DriverManager.getConnection(protocol + homePath + "\\" + userName
                                                             + ";create=true"
                                                             + ";user=" + userName
                                                             + ";password=" + password);
 
+            return conn;
         } catch (SQLException sqle) {
             printSQLException(sqle);
-        } finally {
-
-            //Release connection
-            try {
-                if (conn != null) {
-                    //aggiunta istruzione SQL
-                    conn.close();
-                    conn = null;
-                }
-            } catch (SQLException sqle) {
-                printSQLException(sqle);
-            }
         }
 
-        return true;
+        return null;
     }
 
     static void printSQLException(SQLException e)
