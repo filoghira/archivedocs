@@ -1,0 +1,28 @@
+<component name="libraryTable">
+  <library name="derby">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../Apache derby/librerie derby/derby.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Apache derby/librerie derby/derbyclient.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Apache derby/librerie derby/derbyLocale_cs.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Apache derby/librerie derby/derbyLocale_de_DE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Apache derby/librerie derby/derbyLocale_es.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Apache derby/librerie derby/derbyLocale_fr.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Apache derby/librerie derby/derbyLocale_hu.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Apache derby/librerie derby/derbyLocale_it.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Apache derby/librerie derby/derbyLocale_ja_JP.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Apache derby/librerie derby/derbyLocale_ko_KR.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Apache derby/librerie derby/derbyLocale_pl.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Apache derby/librerie derby/derbyLocale_pt_BR.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Apache derby/librerie derby/derbyLocale_ru.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Apache derby/librerie derby/derbyLocale_zh_CN.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Apache derby/librerie derby/derbyLocale_zh_TW.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Apache derby/librerie derby/derbynet.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Apache derby/librerie derby/derbyoptionaltools.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Apache derby/librerie derby/derbyrun.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Apache derby/librerie derby/derbyshared.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../Apache derby/librerie derby/derbytools.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
