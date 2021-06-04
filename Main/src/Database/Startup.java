@@ -1,29 +1,25 @@
 package Database;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Properties;
 
 public class Startup {
 
     static String driver = "org.apache.derby.jdbc.EmbeddedDriver";
     static String protocol = "jdbc:derby:";
 
-    public static boolean init(String userName, String password) throws InstantiationException, IllegalAccessException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException{
+    public static boolean init(String userName, String password){
 
         Connection conn = null;
 
         try{
-            // Connection properties
-            Properties props = new Properties();
-
-            props.put("user", userName);
-            props.put("password", password);
 
             String dbName = userName;
+            String homePath = GeneralUtils.HomeDir.homePath();
 
-            conn = DriverManager.getConnection(protocol + dbName + ";create=true", props);
+            conn = DriverManager.getConnection(protocol + homePath + "\\" + dbName
+                                                            + ";create=true"
+                                                            + ";user=" + userName
+                                                            + ";password=" + password);
 
         } catch (SQLException sqle) {
             printSQLException(sqle);

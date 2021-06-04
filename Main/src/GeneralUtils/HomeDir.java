@@ -1,4 +1,4 @@
-package Utilities;
+package GeneralUtils;
 
 public class HomeDir {
     public static String homePath(){
