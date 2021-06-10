@@ -1,13 +1,13 @@
 ----------------------------------------------------------------
-Fri Jun 04 22:04:53 CEST 2021:
-Avvio della versione di Derby The Apache Software Foundation - Apache Derby - 10.15.2.0 - (1873585): istanza a816c00e-0179-d8a0-e596-00000f62c338
-sulla directory di database C:\Users\simon\greve con caricatore classi jdk.internal.loader.ClassLoaders$AppClassLoader@3764951d 
-Caricato da file:/F:/Scuola/informatica/Apache%20derby/librerie%20derby/derby.jar
+Thu Jun 10 19:17:41 CEST 2021:
+Avvio della versione di Derby The Apache Software Foundation - Apache Derby - 10.15.2.0 - (1873585): istanza a816c00e-0179-f6ed-f2ee-00000700b000
+sulla directory di database /home/filippo/bho con caricatore classi jdk.internal.loader.ClassLoaders$AppClassLoader@251a69d7 
+Caricato da file:/home/filippo/javaLibs/Derby_10/lib/derby.jar
 java.vendor=Oracle Corporation
-java.runtime.version=15.0.2+7-27
-user.dir=F:\Scuola\informatica\ArchiveDocs
-os.name=Windows 10
+java.runtime.version=16.0.1+9-24
+user.dir=/home/filippo/IdeaProjects/ArchiveDocs
+os.name=Linux
 os.arch=amd64
-os.version=10.0
+os.version=5.8.0-55-generic
 derby.system.home=null
 Programma di caricamento classe database avviato - derby.database.classpath=''
