@@ -23,5 +23,7 @@ public class Archive {
         while(i<tags.size()){
             tags.get(i).addDocument(document);
         }
+
+        // Add the document to the db
     }
 }

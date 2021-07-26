@@ -1,10 +1,8 @@
 package Database;
 
-import java.sql.Statement;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import GeneralUtils.SQLUtils;
+
+import java.sql.*;
 // import java.util.Properties;
 
 import static GeneralUtils.SQLUtils.printSQLException;
@@ -13,7 +11,7 @@ public class Database {
 
     static String protocol = "jdbc:derby:";
 
-    private String dbName;
+    private final String dbName;
     // private Properties dbProperties;
     private Connection connection = null;
 
@@ -34,8 +32,8 @@ public class Database {
                     + ";user=" + userName
                     + ";password=" + password);
 
-        } catch (SQLException sqle) {
-            printSQLException(sqle);
+        } catch (SQLException e) {
+            printSQLException(e);
         }
 
     }
@@ -66,32 +64,105 @@ public class Database {
         }
     }
 
-    public void createTable(String name, ArrayList<String[]> col) throws Exception {
-
+    public boolean executeStatement(String query){
         // Create the statement
-        Statement state = connection.createStatement();
-
-        // Prepare the table for the creation of a table with ID as primary key
-        String query = "CREATE TABLE " + name + "("
-                + "Id INT NOT NULL GENERATED ALWAYS AS IDENTITY, ";
-
-        // Run through the list of columns and update the query
-        int i=0;
-        while(i < col.size()){
-            String[] element = col.get(i);
-            query = query + element[0] + " " + element[1] + ", ";
-            i++;
-        }
-
-        query += "PRIMARY KEY (Id))";
+        Statement state;
 
         // Execute the query
         try {
-            state.execute(query);
+            state = connection.createStatement();
+            boolean res = state.execute(query);
+
+            state.close();
+
+            return res;
         }catch(SQLException e){
-            System.out.println("Error SQL:"+e.getErrorCode());
+            SQLUtils.printSQLException(e);
         }
 
+        return false;
+    }
+
+    /**
+     * Create a SQL table. By default there's an Identity Column
+     * @param name Name of the table
+     * @param col String matrix. Each row contains the name of the column and the data type
+     */
+    public void addTable(String name, String[][] col){
+
+        // Prepare the query
+        StringBuilder query = new StringBuilder("CREATE TABLE " + name + " ("
+                + "Id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), ");
+
+        // Run through the list of columns and update the query
+        int i=0;
+        while(i < col.length){
+            String[] element = col[i];
+            query.append(element[0]).append(" ").append(element[1]).append(", ");
+            i++;
+        }
+
+        query.append("PRIMARY KEY (Id))");
+
+        executeStatement(query.toString());
+    }
+
+    /**
+     * Insert a row in a table
+     * @param tableName Name of the table
+     * @param values String matrix. Each row contains the name of the column and the data.
+     * @return Returns false if something goes wrong, otherwise it returns true.
+     */
+    public boolean addRow(String tableName, String[][] values){
+
+        // Prepare the query
+        StringBuilder query = new StringBuilder("INSERT INTO " + tableName + " (");
+        StringBuilder partialQuery = new StringBuilder(" (");
+
+        int i=0;
+        while(i < values.length){
+            query.append(values[i][0]);
+            partialQuery.append(values[i][1]);
+
+            if(i < values.length - 1) {
+                query.append(", ");
+                partialQuery.append(", ");
+            }else{
+                query.append(") VALUES");
+                partialQuery.append(")");
+                break;
+            }
+
+            i++;
+        }
+
+        return executeStatement(query + partialQuery.toString());
+    }
+
+    public ResultSet selectAll(String tableName){
+        String query = "SELECT * FROM " + tableName;
+
+        // Create the statement
+        Statement state;
+
+        // Execute the query
+        try {
+            state = connection.createStatement();
+
+            return state.executeQuery(query);
+        }catch(SQLException e){
+            SQLUtils.printSQLException(e);
+        }
+
+        return null;
+    }
+
+    public void closeConnection(){
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            SQLUtils.printSQLException(e);
+        }
     }
 
 }
