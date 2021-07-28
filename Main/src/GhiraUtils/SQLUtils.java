@@ -1,4 +1,4 @@
-package GeneralUtils;
+package GhiraUtils;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;

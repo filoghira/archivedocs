@@ -13,14 +13,16 @@ public class Main extends Application {
 
     private Stage primaryStage;
     private BorderPane rootLayout;
+    private Controller controller;
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage){
+        controller = new Controller();
+
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("AddressApp");
 
         initRootLayout();
-
         showFileOverview();
     }
 
@@ -51,18 +53,17 @@ public class Main extends Application {
             // Load person overview.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Main.class.getResource("view/FileOverview.fxml"));
-            AnchorPane personOverview = loader.load();
+            AnchorPane fileOverview = loader.load();
 
             // Set person overview into the center of root layout.
-            rootLayout.setCenter(personOverview);
+            rootLayout.setCenter(fileOverview);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Returns the main stage.
-     * @return
+     * @return the main stage
      */
     public Stage getPrimaryStage() {
         return primaryStage;

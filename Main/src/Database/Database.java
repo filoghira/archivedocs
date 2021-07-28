@@ -1,11 +1,12 @@
 package Database;
 
-import GeneralUtils.SQLUtils;
+import GhiraUtils.General;
+import GhiraUtils.SQLUtils;
 
 import java.sql.*;
 // import java.util.Properties;
 
-import static GeneralUtils.SQLUtils.printSQLException;
+import static GhiraUtils.SQLUtils.printSQLException;
 
 public class Database {
 
@@ -25,7 +26,7 @@ public class Database {
 
         try{
 
-            String homePath = GeneralUtils.HomeDir.homePath();
+            String homePath = General.homePath();
 
             connection = DriverManager.getConnection(protocol + homePath + "/" + userName
                     + ";create=true"
