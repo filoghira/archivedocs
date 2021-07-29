@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="derbyrun">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Documents/javaLibs/Derby_10/lib/derbyrun.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/javaLibs/Derby_10/lib/derbyshared.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/javaLibs/Derby_10/lib/derbytools.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/javaLibs/Derby_10/lib/derbyoptionaltools.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/javaLibs/Derby_10/lib/derbynet.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/javaLibs/Derby_10/lib/derbyLocale_it.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/javaLibs/Derby_10/lib/derby.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/javaLibs/Derby_10/lib/derbyclient.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

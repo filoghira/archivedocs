@@ -1,13 +1,14 @@
 package GUI;
 
+import Database.Database;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-
 import java.io.IOException;
+import Main.Archive;
 
 public class Main extends Application {
 
@@ -18,16 +19,17 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage){
         controller = new Controller();
+        controller.setArchive(new Archive(new Database("bho", "")));
 
         this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("AddressApp");
+        this.primaryStage.setTitle("Archive");
 
         initRootLayout();
         showFileOverview();
     }
 
     /**
-     * Initializes the root layout.
+     * Initialize root layout
      */
     public void initRootLayout() {
         try {
@@ -46,7 +48,7 @@ public class Main extends Application {
     }
 
     /**
-     * Shows the person overview inside the root layout.
+     * Shows the file overview inside the root layout.
      */
     public void showFileOverview() {
         try {
@@ -70,6 +72,7 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
+        Database db = new Database("bho", "");
         launch(args);
     }
 }
