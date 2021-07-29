@@ -19,7 +19,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage){
         controller = new Controller();
-        controller.setArchive(new Archive(new Database("bho", "")));
+        controller.setArchive(new Archive("test"));
 
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Archive");
@@ -72,7 +72,6 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        Database db = new Database("bho", "");
         launch(args);
     }
 }

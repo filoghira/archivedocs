@@ -5,16 +5,21 @@ import Database.Database;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
+import static Database.Database.mainTable;
+import static Database.Database.mainTableColumns;
+
 public class Archive {
 
     private ArrayList<Document> documents;
     private ArrayList<Tag> tags;
     private Database db;
-    private static final String mainTable = "rootTable";
-    private static final String[][] mainTableColumns = {{"id", "INT"}, {"filename", "TEXT"}, {"path", "PATH"}};
 
-    public Archive(Database db){
-        this.db = db;
+    public Archive(String username, String password){
+        db = new Database(username, password);
+    }
+
+    public Archive(String username){
+        db = new Database(username, "");
     }
 
     void addDocument(ArrayList<Tag> tags, String name, Path path){
@@ -29,7 +34,7 @@ public class Archive {
         String[][] data = new String[mainTableColumns.length-1][2];
 
         i=1;
-        while(i<mainTableColumns.length){
+        while(i< mainTableColumns.length){
             data[i][0] = mainTableColumns[i][0];
             data[i][1] = document.getProp(mainTableColumns[i][1]);
         }

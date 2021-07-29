@@ -3,8 +3,11 @@ package Database;
 import GhiraUtils.General;
 import GhiraUtils.SQLUtils;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.*;
-// import java.util.Properties;
 
 import static GhiraUtils.SQLUtils.printSQLException;
 
@@ -16,6 +19,10 @@ public class Database {
     // private Properties dbProperties;
     private Connection connection = null;
 
+    public static final String mainTable = "rootTable";
+    public static final String[][] mainTableColumns = {{"fileName", "VARCHAR(260)"}, {"filePath", "VARCHAR(32672)"}};
+    private static final String defaultFolder = "\\archivedocs";
+
     public Database (String userName, String password)
     {
 
@@ -26,34 +33,30 @@ public class Database {
 
         try{
 
-            String homePath = General.homePath();
+            String homePath = General.homePath() + defaultFolder;
 
-            connection = DriverManager.getConnection(protocol + homePath + "/" + userName
+            // If the main directory where the databases are stored does not exists, create it
+            Path archivesDir = Paths.get(homePath);
+            if(!Files.isDirectory(archivesDir))
+                Files.createDirectories(archivesDir);
+
+            // try to connect to the database. If the connection fails it creates a new database
+            connection = DriverManager.getConnection(protocol + homePath + "\\" + userName
                     + ";create=true"
                     + ";user=" + userName
                     + ";password=" + password);
 
+            // Checks if main table exists. If it doesn't it creates it
+            if(!SQLUtils.tableExists(connection, mainTable))
+                addTable(mainTable, mainTableColumns);
+
         } catch (SQLException e) {
             printSQLException(e);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }
-
-    /*
-    private Properties loadDBProperties()
-    {
-        InputStream dbPropInputStream = null;
-        dbPropInputStream = Database.class.getResourceAsStream("Configuration.properties");
-        dbProperties = new Properties();
-
-        try {
-            dbProperties.load(dbPropInputStream);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return dbProperties;
-    }
-     */
 
     private void loadDatabaseDriver(String driverName)
     {
@@ -72,6 +75,7 @@ public class Database {
         // Execute the query
         try {
             state = connection.createStatement();
+            System.out.println(query);
             boolean res = state.execute(query);
 
             state.close();
@@ -93,7 +97,7 @@ public class Database {
 
         // Prepare the query
         StringBuilder query = new StringBuilder("CREATE TABLE " + name + " ("
-                + "Id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), ");
+                + "Id INT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), ");
 
         // Run through the list of columns and update the query
         int i=0;
@@ -103,7 +107,7 @@ public class Database {
             i++;
         }
 
-        query.append("PRIMARY KEY (Id))");
+        query.append("PRIMARY KEY(Id))");
 
         executeStatement(query.toString());
     }
