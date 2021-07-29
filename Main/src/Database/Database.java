@@ -127,7 +127,7 @@ public class Database {
         int i=0;
         while(i < values.length){
             query.append(values[i][0]);
-            partialQuery.append(values[i][1]);
+            partialQuery.append(General.quote(values[i][1]));
 
             if(i < values.length - 1) {
                 query.append(", ");

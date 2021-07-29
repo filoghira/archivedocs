@@ -21,4 +21,8 @@ public class General {
         File file = new File(path);
         return file.getParentFile().toString();
     }
+
+    public static String quote(String input){
+        return "'" + input + "'";
+    }
 }

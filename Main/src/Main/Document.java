@@ -1,5 +1,7 @@
 package Main;
 
+import Database.Database;
+
 import java.nio.file.Path;
 import java.util.ArrayList;
 
@@ -17,9 +19,9 @@ public class Document {
 
     public String getProp(String prop){
         switch (prop){
-            case "name":
+            case "fileName":
                 return name;
-            case "path":
+            case "filePath":
                 return path.toString();
             default:
                 return null;

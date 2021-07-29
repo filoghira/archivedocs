@@ -1,6 +1,5 @@
 package GUI;
 
-import Database.Database;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -8,6 +7,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.nio.file.Paths;
+
 import Main.Archive;
 
 public class Main extends Application {
@@ -15,11 +16,14 @@ public class Main extends Application {
     private Stage primaryStage;
     private BorderPane rootLayout;
     private Controller controller;
+    private Archive archive;
 
     @Override
     public void start(Stage primaryStage){
         controller = new Controller();
-        controller.setArchive(new Archive("test"));
+        archive = new Archive("test");
+        controller.setArchive(archive);
+        archive.addDocument(null, "aaaa", Paths.get("C:\\Utenti\\Filippo Ghirardini\\Sium"));
 
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Archive");
