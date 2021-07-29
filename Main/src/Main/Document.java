@@ -15,4 +15,15 @@ public class Document {
         this.path = path;
     }
 
+    public String getProp(String prop){
+        switch (prop){
+            case "name":
+                return name;
+            case "path":
+                return path.toString();
+            default:
+                return null;
+        }
+    }
+
 }
