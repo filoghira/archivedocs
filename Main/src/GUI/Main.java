@@ -23,7 +23,6 @@ public class Main extends Application {
         controller = new Controller();
         archive = new Archive("test");
         controller.setArchive(archive);
-        archive.addDocument(null, "aaaa", Paths.get("C:\\Utenti\\Filippo Ghirardini\\Sium"));
 
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Archive");

@@ -47,8 +47,7 @@ public class Database {
                     + ";password=" + password);
 
             // Checks if main table exists. If it doesn't it creates it
-            if(!SQLUtils.tableExists(connection, mainTable))
-                addTable(mainTable, mainTableColumns);
+            addTable(mainTable, mainTableColumns);
 
         } catch (SQLException e) {
             printSQLException(e);
@@ -75,7 +74,7 @@ public class Database {
         // Execute the query
         try {
             state = connection.createStatement();
-            System.out.println(query);
+            System.out.println("Executing query:\n" + query);
             boolean res = state.execute(query);
 
             state.close();

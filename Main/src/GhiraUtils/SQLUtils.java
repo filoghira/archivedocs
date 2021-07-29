@@ -1,13 +1,17 @@
 package GhiraUtils;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class SQLUtils {
     public static void printSQLException(SQLException e)
     {
+
+        if(e.getSQLState().equals("X0Y32")){
+            System.out.println("The main table already exists, not creating it.");
+            return;
+        }
+
         // Unwraps the entire exception chain to unveil the real cause of the exeption
         while (e != null)
         {
@@ -17,14 +21,6 @@ public class SQLUtils {
             System.err.println("  Message:    " + e.getMessage());
             e = e.getNextException();
         }
-    }
-
-    public static boolean tableExists(Connection connection, String tableName) throws SQLException
-    {
-        DatabaseMetaData meta = connection.getMetaData();
-        ResultSet resultSet = meta.getTables(null, null, tableName, new String[] {"TABLE"});
-
-        return resultSet.next();
     }
 
     public static String quote(String input){
