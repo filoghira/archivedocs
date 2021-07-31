@@ -1,6 +1,8 @@
 package Main;
 
 import Database.Database;
+import GhiraUtils.General;
+import GhiraUtils.SQLUtils;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,13 +20,40 @@ public class Archive {
 
     public Archive(String username, String password){
         db = new Database(username, password);
+        tags = new ArrayList<>();
+        updateTagsFromDB();
     }
 
     public Archive(String username){
         db = new Database(username, "");
     }
 
-    public void addDocument(ArrayList<Tag> tags, String name, Path path){
+    private ArrayList<Tag> parseTags(String[] tags){
+        ArrayList<Tag> out = new ArrayList<>();
+
+        int i=0;
+        while(i<tags[i].length()){
+            int k=0;
+            while(k<this.tags.size()){
+                if(
+                        tags[i].equals(
+                                this.tags.get(i).getProp(
+                                        tagsTableColumns[0][0])
+                        )
+                )
+                    out.add(this.tags.get(i));
+
+                k++;
+            }
+            i++;
+        }
+
+        return out;
+    }
+
+    public void addDocument(String[] tagStrings, String name, Path path){
+
+        ArrayList<Tag> tags = parseTags(tagStrings);
 
         Document document = new Document(tags, name, path);
 
@@ -45,7 +74,16 @@ public class Archive {
         }
 
         // Add the document to the db
-        db.addRow(mainTable, data);
+        ResultSet rs = db.addRow(mainTable, data);
+        try {
+            int id = rs.getInt(1);
+            document.setID(id);
+        } catch (SQLException e) {
+            SQLUtils.printSQLException(e);
+        }
+
+        for(i=0; i<tags.size(); i++)
+            db.addRow(tags.get(i).getProp(tagsTableColumns[0][0]), new String[][] {{tagColumns[0][0], Integer.toString(document.getID())}});
     }
 
     public void addDocument(String name, Path path){
@@ -82,7 +120,7 @@ public class Archive {
         addTag(null, name);
     }
 
-    void updateFromDB(){
+    void updateDocumentsFromDB(){
 
         // SELECT every document from the main table in the database
         ResultSet rs = db.getAllFromTable(mainTable);
@@ -101,6 +139,30 @@ public class Archive {
 
             // Update the document list
             this.documents = documents;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    void updateTagsFromDB(){
+
+        ResultSet rs = db.getAllFromTable(tagsTable);
+
+        try {
+
+            ArrayList<Tag> tags = new ArrayList<>();
+
+            // Go through result set and create documents
+            while (rs.next()) {
+                String tagName = rs.getString(1);
+
+                tags.add(new Tag(null, tagName));
+            }
+
+            // Update the document list
+            this.tags = tags;
 
         } catch (SQLException e) {
             e.printStackTrace();

@@ -7,6 +7,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import Main.Tag;
 
 import Main.Archive;
 
@@ -24,6 +27,7 @@ public class Main extends Application {
         controller.setArchive(archive);
 
         archive.addTag("gigi");
+        archive.addDocument(new String[] {"gigi"}, "a", Path.of("C:\\"));
 
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Archive");

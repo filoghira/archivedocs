@@ -2,6 +2,8 @@ package Main;
 
 import java.util.ArrayList;
 
+import static Database.Database.tagsTableColumns;
+
 public class Tag {
 
     private ArrayList<Document> documents;
@@ -30,12 +32,10 @@ public class Tag {
      * @return the property.
      */
     public String getProp(String prop){
-        switch (prop){
-            case "tagName":
-                return name;
-            default:
-                return null;
-        }
+        if(prop.equals(tagsTableColumns[0][0]))
+            return name;
+        else
+            return null;
     }
 
 

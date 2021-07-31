@@ -2,8 +2,6 @@ package Database;
 
 import GhiraUtils.General;
 import GhiraUtils.SQLUtils;
-import Main.Document;
-import Main.Tag;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -72,7 +70,7 @@ public class Database {
      * @param query The query to be executed
      * @return True if the execution has success and false if it fails
      */
-    public boolean executeStatement(String query){
+    public ResultSet executeStatement(String query){
         // Create the statement
         Statement state;
 
@@ -80,16 +78,18 @@ public class Database {
         try {
             state = connection.createStatement();
             System.out.println("Executing query:\n" + query);
-            boolean res = state.execute(query);
+            state.execute(query);
+
+            ResultSet rs = state.getGeneratedKeys();
 
             state.close();
 
-            return res;
+            return rs;
         }catch(SQLException e){
             SQLUtils.printSQLException(e);
         }
 
-        return false;
+        return null;
     }
 
     /**
@@ -122,7 +122,7 @@ public class Database {
      * @param values String matrix. Each row contains the name of the column and the data.
      * @return Returns false if something goes wrong, otherwise it returns true.
      */
-    public boolean addRow(String tableName, String[][] values){
+    public ResultSet addRow(String tableName, String[][] values){
 
         // Prepare the query
         StringBuilder query = new StringBuilder("INSERT INTO " + tableName + " (");
