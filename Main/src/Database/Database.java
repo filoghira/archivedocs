@@ -2,6 +2,8 @@ package Database;
 
 import GhiraUtils.General;
 import GhiraUtils.SQLUtils;
+import Main.Document;
+import Main.Tag;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,17 +18,14 @@ public class Database {
     static String protocol = "jdbc:derby:";
 
     private final String dbName;
-    // private Properties dbProperties;
     private Connection connection = null;
 
-    public static final String mainTable = "rootTable";
-    public static final String[][] mainTableColumns = {{"fileName", "VARCHAR(260)"}, {"filePath", "VARCHAR(32672)"}};
+    public static final String mainTable = "rootTable", tagsTable = "tagTable";
+    public static final String[][] mainTableColumns = {{"fileName", "VARCHAR(260)"}, {"filePath", "VARCHAR(32672)"}}, tagsTableColumns = {{"tagName", "VARCHAR(100)"}}, tagColumns = {{"main_ID", "INT"}};
     private static final String defaultFolder = "\\archivedocs";
 
     public Database (String userName, String password)
     {
-
-        // dbProperties = loadDBProperties();
 
         dbName = userName;
         loadDatabaseDriver("org.apache.derby.jdbc.EmbeddedDriver");
@@ -48,6 +47,7 @@ public class Database {
 
             // Checks if main table exists. If it doesn't it creates it
             addTable(mainTable, mainTableColumns);
+            addTable(tagsTable, tagsTableColumns);
 
         } catch (SQLException e) {
             printSQLException(e);
@@ -67,6 +67,11 @@ public class Database {
         }
     }
 
+    /**
+     * Execute a given statement
+     * @param query The query to be executed
+     * @return True if the execution has success and false if it fails
+     */
     public boolean executeStatement(String query){
         // Create the statement
         Statement state;
@@ -143,7 +148,12 @@ public class Database {
         return executeStatement(query + partialQuery.toString());
     }
 
-    public ResultSet selectAll(String tableName){
+    /**
+     *
+     * @param tableName Name of the table
+     * @return A resultSet containing all of the data in the table
+     */
+    public ResultSet getAllFromTable(String tableName){
         String query = "SELECT * FROM " + tableName;
 
         // Create the statement
@@ -161,6 +171,9 @@ public class Database {
         return null;
     }
 
+    /**
+     * Close the connection of the database
+     */
     public void closeConnection(){
         try {
             connection.close();
