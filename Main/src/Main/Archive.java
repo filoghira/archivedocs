@@ -69,6 +69,9 @@ public class Archive {
      */
     public void addDocument(String[] tagStrings, String name, Path path){
 
+        if(documentExists(name, path.toString()))
+            return;
+
         // Parse the name of the tags and get the actual objects
         ArrayList<Tag> tags = parseTags(tagStrings);
 
@@ -110,11 +113,52 @@ public class Archive {
     }
 
     /**
+     * Check if a tag already exists
+     * @param name Name of the tag
+     * @return True if it exists, otherwise false
+     */
+    boolean tagExists(String name){
+        if(tags==null)
+            return false;
+        int i=0;
+        while(i<tags.size()){
+            if(tags.get(i).getProp(tagsTableColumns[0][0]).equals(name))
+                return true;
+            i++;
+        }
+        return false;
+    }
+
+    /**
+     * Check if a document is already in the database
+     * @param name Name of the document
+     * @param path Path of the document
+     * @return True of it's already there, otherwise false
+     */
+    boolean documentExists(String name, String path){
+        if(documents==null)
+            return false;
+        int i=0;
+        while(i < documents.size()){
+            if(documents.get(i).getProp(mainTableColumns[0][0]).equals(name) &&
+                    documents.get(i).getProp(mainTableColumns[1][0]).equals(path))
+                return true;
+            i++;
+        }
+        return false;
+    }
+
+    /**
      * Add a new tag to the archive
      * @param documents The list of the documents that belongs to the new tag
      * @param name Name of the tag
      */
     public void addTag(ArrayList<Document> documents, String name){
+
+        // If the tag already exists
+        if(tagExists(name))
+            return;
+
         // Create the tag
         Tag tag = new Tag(documents, name);
 
