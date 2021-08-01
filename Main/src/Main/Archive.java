@@ -61,6 +61,12 @@ public class Archive {
         return out;
     }
 
+    /**
+     * Add a new Document to the archive
+     * @param tagStrings A String array containing the names of the tag that belong to the document
+     * @param name Name of the document
+     * @param path Path of the file
+     */
     public void addDocument(String[] tagStrings, String name, Path path){
 
         // Parse the name of the tags and get the actual objects

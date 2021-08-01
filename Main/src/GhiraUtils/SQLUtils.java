@@ -7,14 +7,18 @@ public class SQLUtils {
     public static void printSQLException(SQLException e)
     {
 
-        if(e.getSQLState().equals("X0Y32")){
-            System.out.println("The table already exists, not creating it.");
-            return;
-        }
-
         // Unwraps the entire exception chain to unveil the real cause of the exeption
         while (e != null)
         {
+
+            if(e.getSQLState().equals("X0Y32")){
+                System.out.println("The table already exists, not creating it.");
+                return;
+            }else if (e.getSQLState().equals("XSDB6")){
+                System.out.println("Another connection to the database is opened. Closing the application...");
+                System.exit(69);
+            }
+
             System.err.println("\n----- SQLException -----");
             System.err.println("  SQL State:  " + e.getSQLState());
             System.err.println("  Error Code: " + e.getErrorCode());
