@@ -8,7 +8,7 @@ public class SQLUtils {
     {
 
         if(e.getSQLState().equals("X0Y32")){
-            System.out.println("The main table already exists, not creating it.");
+            System.out.println("The table already exists, not creating it.");
             return;
         }
 

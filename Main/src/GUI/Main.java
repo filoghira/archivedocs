@@ -26,7 +26,6 @@ public class Main extends Application {
         archive = new Archive("test");
         controller.setArchive(archive);
 
-        archive.addTag("gigi");
         archive.addDocument(new String[] {"gigi"}, "a", Path.of("C:\\"));
 
         this.primaryStage = primaryStage;

@@ -66,33 +66,6 @@ public class Database {
     }
 
     /**
-     * Execute a given statement
-     * @param query The query to be executed
-     * @return True if the execution has success and false if it fails
-     */
-    public ResultSet executeStatement(String query){
-        // Create the statement
-        Statement state;
-
-        // Execute the query
-        try {
-            state = connection.createStatement();
-            System.out.println("Executing query:\n" + query);
-            state.execute(query);
-
-            ResultSet rs = state.getGeneratedKeys();
-
-            state.close();
-
-            return rs;
-        }catch(SQLException e){
-            SQLUtils.printSQLException(e);
-        }
-
-        return null;
-    }
-
-    /**
      * Create a SQL table. By default there's an Identity Column
      * @param name Name of the table
      * @param col String matrix. Each row contains the name of the column and the data type
@@ -113,7 +86,17 @@ public class Database {
 
         query.append("PRIMARY KEY(Id))");
 
-        executeStatement(query.toString());
+        // Create the statement
+        PreparedStatement pstmt;
+        try {
+            // Execute the query and close it
+            pstmt = connection.prepareStatement(query.toString(), PreparedStatement.RETURN_GENERATED_KEYS );
+            System.out.println("Executing query:\n" + query);
+            pstmt.executeUpdate();
+            pstmt.close();
+        } catch (SQLException e) {
+            SQLUtils.printSQLException(e);
+        }
     }
 
     /**
@@ -122,14 +105,16 @@ public class Database {
      * @param values String matrix. Each row contains the name of the column and the data.
      * @return Returns false if something goes wrong, otherwise it returns true.
      */
-    public ResultSet addRow(String tableName, String[][] values){
+    public int addRow(String tableName, String[][] values){
 
         // Prepare the query
         StringBuilder query = new StringBuilder("INSERT INTO " + tableName + " (");
         StringBuilder partialQuery = new StringBuilder(" (");
 
+        // Run through the values
         int i=0;
         while(i < values.length){
+            // Build two separated strings, one for the columns and the other for the values
             query.append(values[i][0]);
             partialQuery.append(General.quote(values[i][1]));
 
@@ -145,7 +130,25 @@ public class Database {
             i++;
         }
 
-        return executeStatement(query + partialQuery.toString());
+        // Concatenate the strings
+        query.append(partialQuery);
+        // Prepare the statement
+        PreparedStatement pstmt;
+
+        try {
+            // Execute the statement and get as result the ID of the item that has just been added
+            pstmt = connection.prepareStatement(query.toString(), PreparedStatement.RETURN_GENERATED_KEYS );
+            System.out.println("Executing query:\n" + query);
+            pstmt.executeUpdate();
+            ResultSet rs = pstmt.getGeneratedKeys();
+            rs.next();
+            int out = rs.getInt(1);
+            pstmt.close();
+            return out;
+        } catch (SQLException e) {
+            SQLUtils.printSQLException(e);
+        }
+        return -1;
     }
 
     /**
@@ -162,7 +165,6 @@ public class Database {
         // Execute the query
         try {
             state = connection.createStatement();
-
             return state.executeQuery(query);
         }catch(SQLException e){
             SQLUtils.printSQLException(e);

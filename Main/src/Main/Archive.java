@@ -1,8 +1,6 @@
 package Main;
 
 import Database.Database;
-import GhiraUtils.General;
-import GhiraUtils.SQLUtils;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,19 +26,31 @@ public class Archive {
         db = new Database(username, "");
     }
 
+    /**
+     * Converts an array of strings containing the name of the tags into a list of Tags
+     * @param tags An array of strings containing the names of the tags
+     * @return An ArrayList of Tag
+     */
     private ArrayList<Tag> parseTags(String[] tags){
+        if(this.tags == null)
+            return null;
+
         ArrayList<Tag> out = new ArrayList<>();
 
         int i=0;
+        // Run through the tag names
         while(i<tags[i].length()){
             int k=0;
+            // For each name, check if it exists in the Tag ArrayList of the class
             while(k<this.tags.size()){
+                // If I found the tag (compare the names)
                 if(
                         tags[i].equals(
                                 this.tags.get(i).getProp(
                                         tagsTableColumns[0][0])
                         )
                 )
+                    // Add the tag to the output list
                     out.add(this.tags.get(i));
 
                 k++;
@@ -53,10 +63,13 @@ public class Archive {
 
     public void addDocument(String[] tagStrings, String name, Path path){
 
+        // Parse the name of the tags and get the actual objects
         ArrayList<Tag> tags = parseTags(tagStrings);
 
+        // Create the document
         Document document = new Document(tags, name, path);
 
+        // For each tag add to its own document list the document
         int i=0;
         if(tags != null)
             while (i < tags.size()) {
@@ -64,6 +77,7 @@ public class Archive {
                 i++;
             }
 
+        // Create the data array to be given to the SQL query
         String[][] data = new String[mainTableColumns.length][2];
 
         i=0;
@@ -74,25 +88,31 @@ public class Archive {
         }
 
         // Add the document to the db
-        ResultSet rs = db.addRow(mainTable, data);
-        try {
-            int id = rs.getInt(1);
-            document.setID(id);
-        } catch (SQLException e) {
-            SQLUtils.printSQLException(e);
-        }
+        int id = db.addRow(mainTable, data);
+        document.setID(id);
 
-        for(i=0; i<tags.size(); i++)
-            db.addRow(tags.get(i).getProp(tagsTableColumns[0][0]), new String[][] {{tagColumns[0][0], Integer.toString(document.getID())}});
+        // Add the document ID (reference to the main table) to each table of each tag
+        if(tags!=null) {
+            i=0;
+            while ( i<tags.size ())
+                db.addRow(tagStrings[i], new String[][]{{tagColumns[0][0], Integer.toString(document.getID())}});
+        }
     }
 
     public void addDocument(String name, Path path){
         addDocument(null, name, path);
     }
 
+    /**
+     * Add a new tag to the archive
+     * @param documents The list of the documents that belongs to the new tag
+     * @param name Name of the tag
+     */
     public void addTag(ArrayList<Document> documents, String name){
+        // Create the tag
         Tag tag = new Tag(documents, name);
 
+        // Add each document to the tag's own document list
         int i=0;
         if(documents != null)
             while (i < documents.size()) {
@@ -100,6 +120,7 @@ public class Archive {
                 i++;
             }
 
+        // Create the data array to be given to the SQL query
         String[][] data = new String[tagsTableColumns.length][2];
 
         i=0;
@@ -120,6 +141,9 @@ public class Archive {
         addTag(null, name);
     }
 
+    /**
+     * Gets the document list from the Derby database and updates the current ArrayList
+     */
     void updateDocumentsFromDB(){
 
         // SELECT every document from the main table in the database
@@ -146,12 +170,17 @@ public class Archive {
 
     }
 
+    /**
+     * Gets all the tags from the tags Derby database and updates the tag list
+     */
     void updateTagsFromDB(){
 
+        // Get the table data
         ResultSet rs = db.getAllFromTable(tagsTable);
 
         try {
 
+            // Create the list
             ArrayList<Tag> tags = new ArrayList<>();
 
             // Go through result set and create documents
