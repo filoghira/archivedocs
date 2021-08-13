@@ -8,10 +8,22 @@ public class Tag {
 
     private ArrayList<Document> documents;
     private String name;
+    private Tag parent;
 
-    public Tag(ArrayList<Document> documents, String name){
+    public Tag(ArrayList<Document> documents, String name, Tag parent){
         this.name = name;
         this.documents = documents;
+        this.parent = parent;
+    }
+
+    public Tag(String name, Tag parent){
+        this.name = name;
+        this.parent = parent;
+    }
+
+    public Tag(ArrayList<Document> documents, String name){
+        this.documents = documents;
+        this.name = name;
     }
 
     /**
