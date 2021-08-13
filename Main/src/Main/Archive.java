@@ -249,4 +249,13 @@ public class Archive {
 
     }
 
+    public void init(){
+        updateTagsFromDB();
+        updateDocumentsFromDB();
+    }
+
+    public ArrayList<Document> getDocuments(){
+        return documents;
+    }
+
 }
