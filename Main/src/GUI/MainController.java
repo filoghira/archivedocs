@@ -11,7 +11,7 @@ import java.net.URL;
 import java.util.*;
 
 
-public class Controller implements Initializable
+public class MainController implements Initializable
 {
 
     @FXML
@@ -33,7 +33,8 @@ public class Controller implements Initializable
         this.url = url;
         this.resourceBundle = resourceBundle;
 
-        fileList.setItems(items);
+        if(this.fileList != null)
+            fileList.setItems(items);
 
     }
 

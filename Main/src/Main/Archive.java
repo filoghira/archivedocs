@@ -13,12 +13,11 @@ import static Database.Database.*;
 public class Archive {
 
     private ArrayList<Document> documents;
-    private ArrayList<Tag> tags;
+    private Node tagTree = new Node(null);
     private Database db;
 
     public Archive(String username, String password){
         db = new Database(username, password);
-        tags = new ArrayList<>();
         updateTagsFromDB();
     }
 
@@ -118,15 +117,7 @@ public class Archive {
      * @return True if it exists, otherwise false
      */
     boolean tagExists(String name){
-        if(tags==null)
-            return false;
-        int i=0;
-        while(i<tags.size()){
-            if(tags.get(i).getProp(tagsTableColumns[0][0]).equals(name))
-                return true;
-            i++;
-        }
-        return false;
+        return tagTree.searchNode(name);
     }
 
     /**

@@ -7,9 +7,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import Main.Tag;
 
 import Main.Archive;
 
@@ -17,12 +14,12 @@ public class Main extends Application {
 
     private Stage primaryStage;
     private BorderPane rootLayout;
-    private Controller controller;
+    private MainController controller;
     private Archive archive;
 
     @Override
     public void start(Stage primaryStage){
-        controller = new Controller();
+        controller = new MainController();
         archive = new Archive("test");
         controller.setArchive(archive);
 

@@ -19,10 +19,10 @@ public class Database {
     private Connection connection = null;
 
     public static final String mainTable = "rootTable", tagsTable = "tagTable";
-    public static final String[][] mainTableColumns = {{"fileName", "VARCHAR(260)"}, {"filePath", "VARCHAR(32672)"}}, tagsTableColumns = {{"tagName", "VARCHAR(100)"}}, tagColumns = {{"main_ID", "INT"}};
+    public static final String[][] mainTableColumns = {{"fileName", "VARCHAR(260)"}, {"filePath", "VARCHAR(32672)"}}, tagsTableColumns = {{"tagName", "VARCHAR(100)"}, {"tagParentID", "INT"}}, tagColumns = {{"main_ID", "INT"}};
     private static final String defaultFolder = "\\archivedocs";
 
-    public Database (String userName, String password)
+    public  Database (String userName, String password)
     {
 
         dbName = userName;
