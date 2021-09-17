@@ -1,78 +1,42 @@
 package Main;
 
-import Database.Database;
+import Database.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
-import static Database.Database.*;
+import static Database.DatabaseUtilities.*;
 
 public class Archive {
 
-    private ArrayList<Document> documents;
+    private List<Document> documents;
     private Node tagTree = new Node(null);
-    private Database db;
+    private DatabaseUtilities db;
 
     public Archive(String username, String password){
-        db = new Database(username, password);
-        updateTagsFromDB();
+        db = new DatabaseUtilities(username, password);
+        init();
     }
 
     public Archive(String username){
-        db = new Database(username, "");
-    }
-
-    /**
-     * Converts an array of strings containing the name of the tags into a list of Tags
-     * @param tags An array of strings containing the names of the tags
-     * @return An ArrayList of Tag
-     */
-    private ArrayList<Tag> parseTags(String[] tags){
-        if(this.tags == null)
-            return null;
-
-        ArrayList<Tag> out = new ArrayList<>();
-
-        int i=0;
-        // Run through the tag names
-        while(i<tags[i].length()){
-            int k=0;
-            // For each name, check if it exists in the Tag ArrayList of the class
-            while(k<this.tags.size()){
-                // If I found the tag (compare the names)
-                if(
-                        tags[i].equals(
-                                this.tags.get(i).getProp(
-                                        tagsTableColumns[0][0])
-                        )
-                )
-                    // Add the tag to the output list
-                    out.add(this.tags.get(i));
-
-                k++;
-            }
-            i++;
-        }
-
-        return out;
+        db = new DatabaseUtilities(username, "");
+        init();
     }
 
     /**
      * Add a new Document to the archive
-     * @param tagStrings A String array containing the names of the tag that belong to the document
+     * @param tags A list of the tags that are added to the document
      * @param name Name of the document
      * @param path Path of the file
      */
-    public void addDocument(String[] tagStrings, String name, Path path){
+    public void addDocument(List<Tag> tags, String name, Path path){
 
         if(documentExists(name, path.toString()))
             return;
-
-        // Parse the name of the tags and get the actual objects
-        ArrayList<Tag> tags = parseTags(tagStrings);
 
         // Create the document
         Document document = new Document(tags, name, path);
@@ -86,14 +50,16 @@ public class Archive {
             }
 
         // Create the data array to be given to the SQL query
-        String[][] data = new String[mainTableColumns.length][2];
-
-        i=0;
-        while(i< mainTableColumns.length){
-            data[i][0] = mainTableColumns[i][0];
-            data[i][1] = document.getProp(mainTableColumns[i][0]);
-            i++;
-        }
+        String[][] data = new String[][] {
+            {
+                MainTable.fileName.name(),
+                name
+            },
+            {
+                MainTable.filePath.name(),
+                path.toString()
+            }
+        };
 
         // Add the document to the db
         int id = db.addRow(mainTable, data);
@@ -103,21 +69,12 @@ public class Archive {
         if(tags!=null) {
             i=0;
             while ( i<tags.size ())
-                db.addRow(tagStrings[i], new String[][]{{tagColumns[0][0], Integer.toString(document.getID())}});
+                db.addRow(tags.get(i).getName(), new String[][]{{TagColumns.mainID.name(), Integer.toString(document.getID())}});
         }
     }
 
     public void addDocument(String name, Path path){
         addDocument(null, name, path);
-    }
-
-    /**
-     * Check if a tag already exists
-     * @param name Name of the tag
-     * @return True if it exists, otherwise false
-     */
-    boolean tagExists(String name){
-        return tagTree.searchNode(name);
     }
 
     /**
@@ -131,8 +88,8 @@ public class Archive {
             return false;
         int i=0;
         while(i < documents.size()){
-            if(documents.get(i).getProp(mainTableColumns[0][0]).equals(name) &&
-                    documents.get(i).getProp(mainTableColumns[1][0]).equals(path))
+            if(documents.get(i).getName().equals(name) &&
+                    documents.get(i).getPath().toString().equals(path))
                 return true;
             i++;
         }
@@ -144,14 +101,14 @@ public class Archive {
      * @param documents The list of the documents that belongs to the new tag
      * @param name Name of the tag
      */
-    public void addTag(ArrayList<Document> documents, String name){
+    public void addTag(List<Document> documents, String name, String parentName){
 
         // If the tag already exists
-        if(tagExists(name))
+        if(tagTree.nodeExists(name))
             return;
 
         // Create the tag
-        Tag tag = new Tag(documents, name);
+        Tag tag = new Tag(-2, documents, name);
 
         // Add each document to the tag's own document list
         int i=0;
@@ -162,28 +119,28 @@ public class Archive {
             }
 
         // Create the data array to be given to the SQL query
-        String[][] data = new String[tagsTableColumns.length][2];
-
-        i=0;
-        while(i< tagsTableColumns.length){
-            data[i][0] = tagsTableColumns[i][0];
-            data[i][1] = tag.getProp(tagsTableColumns[i][0]);
-            i++;
-        }
+        String[][] data = {
+                {TagsTable.tagName.name(), name},
+                {TagsTable.tagParentID.name(), Integer.toString(getTagID(parentName))}
+            };
 
         // Add the document to the db
-        db.addRow(tagsTable, data);
+        tag.setID(db.addRow(tagsTable, data));
 
         // Create the table of the tag
-        db.addTable(name, tagColumns);
+        db.addTable(name, new Column[] {TagColumns.mainID});
     }
 
     public void addTag(String name){
-        addTag(null, name);
+        addTag(name, "root");
+    }
+
+    public void addTag(String name, String parentName){
+        addTag(null, name, parentName);
     }
 
     /**
-     * Gets the document list from the Derby database and updates the current ArrayList
+     * Gets the document list from the Derby database and updates the current list
      */
     void updateDocumentsFromDB(){
 
@@ -192,7 +149,7 @@ public class Archive {
 
         try {
 
-            ArrayList<Document> documents = new ArrayList<>();
+            List<Document> documents = new ArrayList<>();
 
             // Go through result set and create documents
             while (rs.next()) {
@@ -211,8 +168,15 @@ public class Archive {
 
     }
 
+    int getTagID(String name){
+        if(name.equals("root"))
+            return 0;
+        Node n = tagTree.getNode(name);
+        return n.getData().getID();
+    }
+
     /**
-     * Gets all the tags from the tags Derby database and updates the tag list
+     * Gets all the tags from the tags Derby database and updates the tag tree
      */
     void updateTagsFromDB(){
 
@@ -221,18 +185,33 @@ public class Archive {
 
         try {
 
-            // Create the list
-            ArrayList<Tag> tags = new ArrayList<>();
+            // List that contains the data extracted from the DB
+            List<String[]> pendingTags = new ArrayList<>();
 
-            // Go through result set and create documents
-            while (rs.next()) {
-                String tagName = rs.getString(1);
+            // Go through result set and get the data
+            while (rs.next())
+                pendingTags.add(new String[]{
+                        String.valueOf(rs.getInt("ID")),
+                        rs.getString(TagsTable.tagName.name()),
+                        String.valueOf(rs.getInt(TagsTable.tagParentID.name()))
+                });
 
-                tags.add(new Tag(null, tagName));
-            }
+            // Convert raw data in a list of tags
+            while(!pendingTags.isEmpty())
+                for(String[] rawTag : pendingTags){
+                    int ID = Integer.parseInt(rawTag[0]);
+                    int parentID = Integer.parseInt(rawTag[2]);
 
-            // Update the document list
-            this.tags = tags;
+                    // If the tag has root as parent
+                    if(parentID == -1) {
+                        tagTree.addChild(new Node(new Tag(ID, rawTag[1])));
+                        pendingTags.remove(rawTag);
+                    }else if(tagTree.nodeExists(rawTag[1])){    // If the tag parent has already been created
+                        tagTree.getNode(rawTag[1]).addChild(new Node(new Tag(ID, rawTag[1])));
+                        pendingTags.remove(rawTag);
+                    }
+                    if(pendingTags.isEmpty()) break;
+                }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -245,8 +224,12 @@ public class Archive {
         updateDocumentsFromDB();
     }
 
-    public ArrayList<Document> getDocuments(){
+    public List<Document> getDocuments(){
         return documents;
+    }
+
+    public void printTagTree(){
+        tagTree.print(0);
     }
 
 }

@@ -8,10 +8,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
-
 import static GhiraUtils.SQLUtils.printSQLException;
 
-public class Database {
+public class DatabaseUtilities {
 
     static String protocol = "jdbc:derby:";
 
@@ -19,10 +18,10 @@ public class Database {
     private Connection connection = null;
 
     public static final String mainTable = "rootTable", tagsTable = "tagTable";
-    public static final String[][] mainTableColumns = {{"fileName", "VARCHAR(260)"}, {"filePath", "VARCHAR(32672)"}}, tagsTableColumns = {{"tagName", "VARCHAR(100)"}, {"tagParentID", "INT"}}, tagColumns = {{"main_ID", "INT"}};
+    static final String INT = "INT";
     private static final String defaultFolder = "\\archivedocs";
 
-    public  Database (String userName, String password)
+    public DatabaseUtilities(String userName, String password)
     {
 
         dbName = userName;
@@ -37,15 +36,15 @@ public class Database {
             if(!Files.isDirectory(archivesDir))
                 Files.createDirectories(archivesDir);
 
-            // try to connect to the database. If the connection fails it creates a new database
+            // Try to connect to the database. If the connection fails it creates a new database
             connection = DriverManager.getConnection(protocol + homePath + "\\" + userName
                     + ";create=true"
                     + ";user=" + userName
                     + ";password=" + password);
 
             // Checks if main table exists. If it doesn't it creates it
-            addTable(mainTable, mainTableColumns);
-            addTable(tagsTable, tagsTableColumns);
+            addTable(mainTable, new Column[] {MainTable.fileName, MainTable.filePath});
+            addTable(tagsTable, new Column[] {TagsTable.tagName, TagsTable.tagParentID});
 
         } catch (SQLException e) {
             printSQLException(e);
@@ -70,7 +69,7 @@ public class Database {
      * @param name Name of the table
      * @param col String matrix. Each row contains the name of the column and the data type
      */
-    public void addTable(String name, String[][] col){
+    public void addTable(String name, Column[] col){
 
         // Prepare the query
         StringBuilder query = new StringBuilder("CREATE TABLE " + name + " ("
@@ -79,8 +78,7 @@ public class Database {
         // Run through the list of columns and update the query
         int i=0;
         while(i < col.length){
-            String[] element = col[i];
-            query.append(element[0]).append(" ").append(element[1]).append(", ");
+            query.append(col[i].name()).append(" ").append(col[i].type()).append(", ");
             i++;
         }
 
@@ -103,10 +101,10 @@ public class Database {
      * Insert a row in a table
      * @param tableName Name of the table
      * @param values String matrix. Each row contains the name of the column and the data.
-     * @return Returns false if something goes wrong, otherwise it returns true.
+     * @return Returns the ID of the row
      */
     public int addRow(String tableName, String[][] values){
-
+        // DA RIFARE CON COME PARAMETRO UN MISTO TRA Columns E STRINGHE (PER I VALORI ATTUALI)
         // Prepare the query
         StringBuilder query = new StringBuilder("INSERT INTO " + tableName + " (");
         StringBuilder partialQuery = new StringBuilder(" (");
@@ -114,9 +112,17 @@ public class Database {
         // Run through the values
         int i=0;
         while(i < values.length){
+
+            String val;
+
+            if(values[i][0].equals(INT))
+                val = values[i][1];
+            else
+                val = General.quote(values[i][1]);
+
             // Build two separated strings, one for the columns and the other for the values
             query.append(values[i][0]);
-            partialQuery.append(General.quote(values[i][1]));
+            partialQuery.append(val);
 
             if(i < values.length - 1) {
                 query.append(", ");
@@ -137,8 +143,8 @@ public class Database {
 
         try {
             // Execute the statement and get as result the ID of the item that has just been added
-            pstmt = connection.prepareStatement(query.toString(), PreparedStatement.RETURN_GENERATED_KEYS );
             System.out.println("Executing query:\n" + query);
+            pstmt = connection.prepareStatement(query.toString(), PreparedStatement.RETURN_GENERATED_KEYS );
             pstmt.executeUpdate();
             ResultSet rs = pstmt.getGeneratedKeys();
             rs.next();

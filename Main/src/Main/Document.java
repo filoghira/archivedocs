@@ -1,18 +1,16 @@
 package Main;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-
-import static Database.Database.mainTableColumns;
+import java.util.List;
 
 public class Document {
 
-    private ArrayList<Tag> tags;
+    private List<Tag> tags;
     private String name;
     private Path path;
     private int ID;
 
-    public Document(ArrayList<Tag> tags, String name, Path path){
+    public Document(List<Tag> tags, String name, Path path){
         this.tags = tags;
         this.name = name;
         this.path = path;
@@ -30,18 +28,12 @@ public class Document {
         return true;
     }
 
-    /**
-     * Get a property from the document, such as the name or its path.
-     * @param prop The property
-     * @return the property.
-     */
-    public String getProp(String prop){
-        if(prop.equals(mainTableColumns[0][0]))
-            return name;
-        else if(prop.equals(mainTableColumns[1][0]))
-            return path.toString();
-        else
-            return null;
+    public String getName(){
+        return name;
+    }
+
+    public Path getPath(){
+        return path;
     }
 
     public void setID(int ID){

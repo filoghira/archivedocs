@@ -21,8 +21,10 @@ public class Main extends Application {
     public void start(Stage primaryStage){
         controller = new MainController();
         archive = new Archive("test");
-        controller.setArchive(archive);
 
+        archive.addTag("franco", "gigi");
+
+        controller.setArchive(archive);
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Archive");
 

@@ -1,29 +1,30 @@
 package Main;
 
-import java.util.ArrayList;
-
-import static Database.Database.tagsTableColumns;
+import java.util.List;
 
 public class Tag {
 
-    private ArrayList<Document> documents;
+    private List<Document> documents;
     private String name;
-    private Tag parent;
+    private int ID;
 
-    public Tag(ArrayList<Document> documents, String name, Tag parent){
+    public Tag(int ID, List<Document> documents, String name){
+        this.ID = ID;
         this.name = name;
         this.documents = documents;
-        this.parent = parent;
     }
 
-    public Tag(String name, Tag parent){
+    public Tag(int ID, String name){
+        this.ID = ID;
         this.name = name;
-        this.parent = parent;
     }
 
-    public Tag(ArrayList<Document> documents, String name){
-        this.documents = documents;
-        this.name = name;
+    public void setID(int ID){
+        this.ID = ID;
+    }
+
+    public int getID(){
+        return ID;
     }
 
     /**
@@ -38,17 +39,8 @@ public class Tag {
         return true;
     }
 
-    /**
-     * Get a property from the tag, such as its name.
-     * @param prop The property
-     * @return the property.
-     */
-    public String getProp(String prop){
-        if(prop.equals(tagsTableColumns[0][0]))
-            return name;
-        else
-            return null;
+    public String getName(){
+        return name;
     }
-
 
 }

@@ -3,8 +3,6 @@ package Main;
 import java.util.ArrayList;
 import java.util.List;
 
-import static Database.Database.tagsTableColumns;
-
 public class Node {
     private Tag data;
     private List<Node> children = new ArrayList<>();
@@ -46,15 +44,44 @@ public class Node {
         return parent;
     }
 
-    public boolean searchNode(String tagName){
+    public boolean nodeExists(String tagName){
         if(data==null)
             if(children==null)
                 return false;
+            else {
+                boolean res = false;
+                for (Node t : children)
+                    res |= t.nodeExists(tagName);
+                return res;
+            }
+        else
+            return data.getName().equals(tagName);
+    }
+
+    public Node getNode(String tagName){
+        if(!nodeExists(tagName))
+            return null;
+        else{
+            if(data != null && data.getName().equals(tagName))
+                return this;
             else
                 for(Node t : children)
-                    t.searchNode(tagName);
-        else
-            return data.getProp(tagsTableColumns[0][0]).equals(tagName);
-        return false;
+                    return t.getNode(tagName);
+        }
+        return null;
+    }
+
+    public void print(int depth){
+        if(data == null)
+            System.out.println("Root");
+        else {
+            for (int i = 0; i < depth; i++)
+                System.out.println("\t");
+            System.out.println(data.getName());
+        }
+
+        if(children!=null)
+            for(Node n : children)
+                n.print(depth+1);
     }
 }
