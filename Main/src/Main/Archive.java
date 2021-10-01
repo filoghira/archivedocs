@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static Database.DatabaseUtilities.*;
@@ -201,19 +202,19 @@ public class Archive {
 
             // Convert raw data in a list of tags
             while(!pendingTags.isEmpty())
-                for(String[] rawTag : pendingTags){
+                for (Iterator<String[]> iter = pendingTags.iterator(); iter.hasNext(); ) {
+                    String[] rawTag = iter.next();
                     int ID = Integer.parseInt(rawTag[0]);
                     int parentID = Integer.parseInt(rawTag[2]);
 
                     // If the tag has root as parent
-                    if(parentID == -1) {
+                    if(parentID == 0) {
                         tagTree.addChild(new Node(new Tag(ID, rawTag[1])));
-                        pendingTags.remove(rawTag);
-                    }else if(tagTree.nodeExists(rawTag[1])){    // If the tag parent has already been created
-                        tagTree.getNode(rawTag[1]).addChild(new Node(new Tag(ID, rawTag[1])));
-                        pendingTags.remove(rawTag);
+                        iter.remove();
+                    }else if(tagTree.nodeExists(Integer.parseInt(rawTag[2]))){    // If the tag parent has already been created
+                        tagTree.getNode(Integer.parseInt(rawTag[2])).addChild(new Node(new Tag(ID, rawTag[1])));
+                        iter.remove();
                     }
-                    if(pendingTags.isEmpty()) break;
                 }
 
         } catch (SQLException e) {

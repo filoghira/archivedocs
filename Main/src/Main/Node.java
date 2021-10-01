@@ -58,6 +58,20 @@ public class Node {
             return data.getName().equals(tagName);
     }
 
+    public boolean nodeExists(int id){
+        if(data==null)
+            if(children==null)
+                return false;
+            else {
+                boolean res = false;
+                for (Node t : children)
+                    res |= t.nodeExists(id);
+                return res;
+            }
+        else
+            return data.getID() == id;
+    }
+
     public Node getNode(String tagName){
         if(!nodeExists(tagName))
             return null;
@@ -67,6 +81,19 @@ public class Node {
             else
                 for(Node t : children)
                     return t.getNode(tagName);
+        }
+        return null;
+    }
+
+    public Node getNode(int id){
+        if(!nodeExists(id))
+            return null;
+        else{
+            if(data != null && data.getID()==id)
+                return this;
+            else
+                for(Node t : children)
+                    return t.getNode(id);
         }
         return null;
     }
