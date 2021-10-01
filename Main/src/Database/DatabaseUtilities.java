@@ -115,7 +115,7 @@ public class DatabaseUtilities {
 
             String val;
 
-            if(values[i][0].equals(INT))
+            if(values[i][2].equals(INT))
                 val = values[i][1];
             else
                 val = General.quote(values[i][1]);

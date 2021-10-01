@@ -111,17 +111,18 @@ public class Archive {
         Tag tag = new Tag(-2, documents, name);
 
         // Add each document to the tag's own document list
-        int i=0;
-        if(documents != null)
+        if(documents != null) {
+            int i = 0;
             while (i < documents.size()) {
                 documents.get(i).addTag(tag);
                 i++;
             }
+        }
 
         // Create the data array to be given to the SQL query
         String[][] data = {
-                {TagsTable.tagName.name(), name},
-                {TagsTable.tagParentID.name(), Integer.toString(getTagID(parentName))}
+                {TagsTable.tagName.name(), name, TagsTable.tagName.type()},
+                {TagsTable.tagParentID.name(), Integer.toString(getTagID(parentName)), TagsTable.tagParentID.type()}
             };
 
         // Add the document to the db
@@ -129,6 +130,8 @@ public class Archive {
 
         // Create the table of the tag
         db.addTable(name, new Column[] {TagColumns.mainID});
+
+        updateTagsFromDB();
     }
 
     public void addTag(String name){
