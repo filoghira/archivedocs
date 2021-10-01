@@ -44,9 +44,9 @@ public class Node {
         return parent;
     }
 
-    public boolean nodeExists(String tagName){
-        if(data==null)
-            if(children==null)
+    public boolean nodeExists(String tagName) {
+        if (data == null)
+            if (children == null)
                 return false;
             else {
                 boolean res = false;
@@ -54,8 +54,12 @@ public class Node {
                     res |= t.nodeExists(tagName);
                 return res;
             }
-        else
-            return data.getName().equals(tagName);
+        else {
+            boolean res = false;
+            for (Node t : children)
+                res |= t.nodeExists(tagName);
+            return data.getName().equals(tagName) || res;
+        }
     }
 
     public boolean nodeExists(int id){
