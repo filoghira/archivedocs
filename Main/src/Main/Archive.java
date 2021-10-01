@@ -105,7 +105,7 @@ public class Archive {
     public void addTag(List<Document> documents, String name, String parentName){
 
         // If the tag already exists
-        if(tagTree.nodeExists(name))
+        if(tagTree.nodeExists(name) || !tagTree.nodeExists(parentName))
             return;
 
         // Create the tag

@@ -22,10 +22,6 @@ public class Main extends Application {
         controller = new MainController();
         archive = new Archive("test");
 
-        // NB se non esiste nessun tag e si prova a creare un tag che ha un parent diverso da root si rompe il programma
-        archive.addTag("gigi");
-        archive.addTag("franco", "gigi");
-
         controller.setArchive(archive);
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Archive");
