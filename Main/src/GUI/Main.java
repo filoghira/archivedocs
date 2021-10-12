@@ -25,13 +25,7 @@ public class Main extends Application {
         controller = new MainController();
         archive = new Archive("test");
 
-        try {
-            archive.addDocument("documento1", Path.of("C:\\Users\\ghira\\Downloads\\ContrattoBarbera.pdf"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (FileAlreadyInArchiveException e) {
-            System.out.println("The document is already in the archive.");
-        }
+        archive.removeDocument(archive.getDocument(1));
 
         controller.setArchive(archive);
         this.primaryStage = primaryStage;

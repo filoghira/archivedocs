@@ -157,6 +157,24 @@ public class DatabaseUtilities {
         return -1;
     }
 
+    public void deleteRow(String tableName, int id){
+        // DELETE FROM table_name WHERE condition;
+        // Prepare the query
+        StringBuilder query = new StringBuilder("DELETE FROM " + tableName + " WHERE ID="+id);
+
+        // Prepare the statement
+        PreparedStatement pstmt;
+
+        try {
+            // Execute the statement and get as result the ID of the item that has just been added
+            System.out.println("Executing query:\n" + query);
+            pstmt = connection.prepareStatement(query.toString(), PreparedStatement.RETURN_GENERATED_KEYS );
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            SQLUtils.printSQLException(e);
+        }
+    }
+
     /**
      *
      * @param tableName Name of the table

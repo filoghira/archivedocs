@@ -115,6 +115,15 @@ public class Archive {
         addDocument(null, name, path);
     }
 
+    public void removeDocument(Document document) {
+        if(!documents.contains(document))
+            return;
+
+        documents.remove(document);
+
+        db.deleteRow(mainTable, document.getID());
+    }
+
     /**
      * Check if a document is already in the database
      * @param hash Hash of the document to be searched
@@ -273,4 +282,15 @@ public class Archive {
         tagTree.print(0);
     }
 
+    /**
+     * Retrieve a Document object from the archive using the ID in the database
+     * @param id ID in the database
+     * @return th document
+     */
+    public Document getDocument(int id){
+        for (Document d:documents)
+            if(d.getID()==id)
+                return d;
+        return null;
+    }
 }
