@@ -17,7 +17,7 @@ public class DatabaseUtilities {
     private final String dbName;
     private Connection connection = null;
 
-    public static final String mainTable = "rootTable", tagsTable = "tagTable";
+    public static final String mainTable = "document", tagsTable = "tag";
     static final String INT = "INT";
     public static final String defaultFolder = "\\archivedocs";
 
