@@ -104,7 +104,6 @@ public class DatabaseUtilities {
      * @return Returns the ID of the row
      */
     public int addRow(String tableName, String[][] values){
-        // DA RIFARE CON COME PARAMETRO UN MISTO TRA Columns E STRINGHE (PER I VALORI ATTUALI)
         // Prepare the query
         StringBuilder query = new StringBuilder("INSERT INTO " + tableName + " (");
         StringBuilder partialQuery = new StringBuilder(" (");
@@ -157,8 +156,12 @@ public class DatabaseUtilities {
         return -1;
     }
 
+    /**
+     * Delete a row in a table by a row's id
+     * @param tableName Name of the table
+     * @param id ID of the row
+     */
     public void deleteRow(String tableName, int id){
-        // DELETE FROM table_name WHERE condition;
         // Prepare the query
         StringBuilder query = new StringBuilder("DELETE FROM " + tableName + " WHERE ID="+id);
 
