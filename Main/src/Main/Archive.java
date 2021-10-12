@@ -122,6 +122,11 @@ public class Archive {
         documents.remove(document);
 
         db.deleteRow(mainTable, document.getID());
+
+        File file = document.getPath().toFile();
+
+        if(file.exists())
+            file.delete();
     }
 
     /**
