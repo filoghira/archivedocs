@@ -1,6 +1,11 @@
 package GhiraUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class General {
     public static String homePath(){
@@ -9,12 +14,12 @@ public class General {
 
     public static String[] getDirTree(String pathname){
 
-        String[] pathnames;
+        String[] pathNames;
 
         File f = new File(pathname);
-        pathnames = f.list();
+        pathNames = f.list();
 
-        return pathnames;
+        return pathNames;
     }
 
     public static String getParentDir(String path){
@@ -25,4 +30,30 @@ public class General {
     public static String quote(String input){
         return "'" + input + "'";
     }
+
+    public static String checksum(String filepath, String algorithm) throws IOException {
+
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance(algorithm);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        // file hashing with DigestInputStream
+        try (DigestInputStream dis = new DigestInputStream(new FileInputStream(filepath), md)) {
+            while (dis.read() != -1) ; //empty loop to clear the data
+            md = dis.getMessageDigest();
+        }
+
+        // bytes to hex
+        StringBuilder result = new StringBuilder();
+        for (byte b : md.digest()) {
+            result.append(String.format("%02x", b));
+        }
+        return result.toString();
+
+    }
+
+
 }

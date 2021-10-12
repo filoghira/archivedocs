@@ -19,7 +19,7 @@ public class DatabaseUtilities {
 
     public static final String mainTable = "rootTable", tagsTable = "tagTable";
     static final String INT = "INT";
-    private static final String defaultFolder = "\\archivedocs";
+    public static final String defaultFolder = "\\archivedocs";
 
     public DatabaseUtilities(String userName, String password)
     {
@@ -43,7 +43,7 @@ public class DatabaseUtilities {
                     + ";password=" + password);
 
             // Checks if main table exists. If it doesn't it creates it
-            addTable(mainTable, new Column[] {MainTable.fileName, MainTable.filePath});
+            addTable(mainTable, new Column[] {DocumentsTable.fileName, DocumentsTable.filePath, DocumentsTable.fileHash});
             addTable(tagsTable, new Column[] {TagsTable.tagName, TagsTable.tagParentID});
 
         } catch (SQLException e) {

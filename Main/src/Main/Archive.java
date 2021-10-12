@@ -1,7 +1,11 @@
 package Main;
 
 import Database.*;
+import GhiraUtils.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
@@ -15,8 +19,9 @@ import static Database.DatabaseUtilities.*;
 public class Archive {
 
     private List<Document> documents;
-    private Node tagTree = new Node(null);
-    private DatabaseUtilities db;
+    private final Node tagTree = new Node(null);
+    private final DatabaseUtilities db;
+    private static final String documentsStorage = "\\docs";
 
     public Archive(String username, String password){
         db = new DatabaseUtilities(username, password);
@@ -34,13 +39,27 @@ public class Archive {
      * @param name Name of the document
      * @param path Path of the file
      */
-    public void addDocument(List<Tag> tags, String name, Path path){
+    public void addDocument(List<Tag> tags, String name, Path path) throws FileNotFoundException, FileAlreadyInArchiveException {
 
-        if(documentExists(name, path.toString()))
-            return;
+        // Check if the file exists in the filesystem
+        File tempFile = new File(path.toString());
+        if(!tempFile.exists())
+            throw new FileNotFoundException("The file named as "+name+" and located in "+path+" does not exist");
+
+        // Hash the file
+        String hash = null;
+        try {
+            hash = General.checksum(path.toString(), "SHA-512");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Check if there's a file with the same hash in the archive
+        if(isInArchive(hash))
+            throw new FileAlreadyInArchiveException("The file named as "+name+" and located in "+path+" does not exist");
 
         // Create the document
-        Document document = new Document(tags, name, path);
+        Document document = new Document(-2, tags, name, path, hash);
 
         // For each tag add to its own document list the document
         int i=0;
@@ -53,12 +72,19 @@ public class Archive {
         // Create the data array to be given to the SQL query
         String[][] data = new String[][] {
             {
-                MainTable.fileName.name(),
-                name
+                DocumentsTable.fileName.name(),
+                name,
+                DocumentsTable.fileName.type()
             },
             {
-                MainTable.filePath.name(),
-                path.toString()
+                DocumentsTable.filePath.name(),
+                path.toString(),
+                DocumentsTable.filePath.type()
+            },
+            {
+                DocumentsTable.fileHash.name(),
+                hash,
+                DocumentsTable.fileHash.type()
             }
         };
 
@@ -72,25 +98,34 @@ public class Archive {
             while ( i<tags.size ())
                 db.addRow(tags.get(i).getName(), new String[][]{{TagColumns.mainID.name(), Integer.toString(document.getID())}});
         }
+
+        try {
+            // Check if the folder where documents are stored has already been created
+            Path docsDir = Paths.get(General.homePath() + defaultFolder + documentsStorage);
+            if(!Files.isDirectory(docsDir))
+                Files.createDirectories(docsDir);
+            // Copy the file in the folder
+            Files.copy(path, Path.of(docsDir + "\\" + name + "_" + id));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void addDocument(String name, Path path){
+    public void addDocument(String name, Path path) throws FileNotFoundException, FileAlreadyInArchiveException {
         addDocument(null, name, path);
     }
 
     /**
      * Check if a document is already in the database
-     * @param name Name of the document
-     * @param path Path of the document
+     * @param hash Hash of the document to be searched
      * @return True of it's already there, otherwise false
      */
-    boolean documentExists(String name, String path){
+    boolean isInArchive(String hash){
         if(documents==null)
             return false;
         int i=0;
         while(i < documents.size()){
-            if(documents.get(i).getName().equals(name) &&
-                    documents.get(i).getPath().toString().equals(path))
+            if(documents.get(i).compareHash(hash))
                 return true;
             i++;
         }
@@ -157,10 +192,12 @@ public class Archive {
 
             // Go through result set and create documents
             while (rs.next()) {
-                String fileName = rs.getString(1);
-                String filePath = rs.getString(2);
+                int id = rs.getInt(1);
+                String fileName = rs.getString(2);
+                String filePath = rs.getString(3);
+                String hash = rs.getString(4);
 
-                documents.add(new Document(null, fileName, Paths.get(filePath)));
+                documents.add(new Document(id, null, fileName, Paths.get(filePath), hash));
             }
 
             // Update the document list

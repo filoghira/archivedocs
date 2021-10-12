@@ -5,30 +5,30 @@ import java.util.List;
 
 public class Document {
 
-    private List<Tag> tags;
-    private String name;
-    private Path path;
+    private final List<Tag> tags;
+    private final String hash;
+    private final String name;
+    private final Path path;
     private int ID;
 
-    public Document(List<Tag> tags, String name, Path path){
+    public Document(int ID, List<Tag> tags, String name, Path path, String hash){
+        this.ID = ID;
         this.tags = tags;
         this.name = name;
         this.path = path;
+        this.hash = hash;
     }
 
     /**
      * Add a tag to the document
      * @param tag Tag to be added
-     * @return False if the document has already the tag, otherwise returns true.
      */
-    boolean addTag(Tag tag){
-        if(tags.contains(tag))
-            return false;
-        tags.add(tag);
-        return true;
+    void addTag(Tag tag){
+        if(!tags.contains(tag))
+            tags.add(tag);
     }
 
-    public String getName(){
+    public String toString(){
         return name;
     }
 
@@ -42,6 +42,10 @@ public class Document {
 
     public int getID(){
         return ID;
+    }
+
+    public boolean compareHash(String hash){
+        return hash.equals(this.hash);
     }
 
 }

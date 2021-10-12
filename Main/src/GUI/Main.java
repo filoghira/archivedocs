@@ -1,5 +1,7 @@
 package GUI;
 
+import GhiraUtils.FileAlreadyInArchiveException;
+import GhiraUtils.FileNotFoundException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -7,6 +9,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import Main.Archive;
 
@@ -21,6 +24,14 @@ public class Main extends Application {
     public void start(Stage primaryStage){
         controller = new MainController();
         archive = new Archive("test");
+
+        try {
+            archive.addDocument("documento1", Path.of("C:\\Users\\ghira\\Downloads\\ContrattoBarbera.pdf"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (FileAlreadyInArchiveException e) {
+            System.out.println("The document is already in the archive.");
+        }
 
         controller.setArchive(archive);
         this.primaryStage = primaryStage;
