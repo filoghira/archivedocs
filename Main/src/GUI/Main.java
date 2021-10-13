@@ -1,15 +1,13 @@
 package GUI;
 
-import GhiraUtils.FileAlreadyInArchiveException;
-import GhiraUtils.FileNotFoundException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+
 import java.io.IOException;
-import java.nio.file.Path;
 
 import Main.Archive;
 
@@ -25,11 +23,10 @@ public class Main extends Application {
         controller = new MainController();
         archive = new Archive("test");
 
-        archive.removeDocument(archive.getDocument(1));
-
         controller.setArchive(archive);
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Archive");
+        controller.setPrimaryStage(primaryStage);
 
         initRootLayout();
         showFileOverview();
