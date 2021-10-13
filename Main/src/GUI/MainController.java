@@ -45,7 +45,7 @@ public class MainController implements Initializable
     }
 
     public void setArchive(Archive archive){
-        this.archive = archive;
+        MainController.archive = archive;
     }
 
     @FXML
@@ -58,7 +58,7 @@ public class MainController implements Initializable
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (FileAlreadyInArchiveException e) {
-                e.printStackTrace();
+                System.out.println("File già presente nell'archivio");
             }
         }
     }

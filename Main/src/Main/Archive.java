@@ -105,7 +105,9 @@ public class Archive {
             if(!Files.isDirectory(docsDir))
                 Files.createDirectories(docsDir);
             // Copy the file in the folder
-            Files.copy(path, Path.of(docsDir + "\\" + name + "_" + id));
+            if(name.contains(".pdf"))
+                name = name.replace(".pdf", "_"+id+".pdf");
+            Files.copy(path, Path.of(docsDir + "\\" + name));
         } catch (IOException e) {
             e.printStackTrace();
         }
