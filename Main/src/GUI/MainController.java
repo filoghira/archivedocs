@@ -2,16 +2,15 @@ package GUI;
 
 import GhiraUtils.FileAlreadyInArchiveException;
 import GhiraUtils.FileNotFoundException;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ListView;
 import Main.Archive;
-import javafx.scene.shape.Arc;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import Main.Node;
 
 import java.io.File;
 import java.net.URL;
@@ -22,16 +21,15 @@ public class MainController implements Initializable
 {
 
     @FXML
-    private ListView fileList;
-    @FXML
     private URL url;
     @FXML
     private  ResourceBundle resourceBundle;
     @FXML
     private Stage primaryStage;
+    @FXML
+    private TreeView tagTree;
 
     private static Archive archive;
-    private ObservableList<String> items = FXCollections.observableArrayList();
 
     public void setPrimaryStage(Stage primaryStage){
         this.primaryStage = primaryStage;
@@ -42,6 +40,28 @@ public class MainController implements Initializable
         this.url = url;
         this.resourceBundle = resourceBundle;
 
+    }
+
+    public void setTagTree(Node tags){
+        tagTree = new TreeView();
+        TreeItem rootItem = new TreeItem("Tags");
+        if(tags.getChildren()!=null)
+            for (Node n:tags.getChildren())
+                addNodes(rootItem, n);
+            addNodes(rootItem, tags);
+        tagTree.setRoot(rootItem);
+    }
+
+    TreeItem addNodes(TreeItem rootItem, Node tags){
+        List<Node> children = tags.getChildren();
+        if(children==null)
+            rootItem.getChildren().add(tags);
+        else{
+            TreeItem son = new TreeItem(tags.getData().getName());
+            for (Node n : children)
+                addNodes(son, n);
+        }
+        return rootItem;
     }
 
     public void setArchive(Archive archive){

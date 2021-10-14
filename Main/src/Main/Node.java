@@ -45,6 +45,8 @@ public class Node {
     }
 
     public boolean nodeExists(String tagName) {
+        if(tagName.equals("root"))
+            return true;
         if (data == null)
             if (children == null)
                 return false;
@@ -83,8 +85,11 @@ public class Node {
             if(data != null && data.getName().equals(tagName))
                 return this;
             else
-                for(Node t : children)
-                    return t.getNode(tagName);
+                for(Node t : children){
+                    Node n = t.getNode(tagName);
+                    if(n!=null)
+                        return n;
+                }
         }
         return null;
     }

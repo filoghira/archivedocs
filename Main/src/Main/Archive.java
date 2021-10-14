@@ -155,7 +155,7 @@ public class Archive {
      */
     public void addTag(List<Document> documents, String name, String parentName){
 
-        // If the tag already exists
+        // If the tag already exists or if the parent tag doesn't
         if(tagTree.nodeExists(name) || !tagTree.nodeExists(parentName))
             return;
 
@@ -287,6 +287,10 @@ public class Archive {
 
     public void printTagTree(){
         tagTree.print(0);
+    }
+
+    public Node getTagTree(){
+        return tagTree;
     }
 
     /**
