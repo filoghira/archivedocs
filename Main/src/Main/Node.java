@@ -101,8 +101,11 @@ public class Node {
             if(data != null && data.getID()==id)
                 return this;
             else
-                for(Node t : children)
-                    return t.getNode(id);
+                for(Node t : children){
+                    Node n = t.getNode(id);
+                    if(n!=null)
+                        return n;
+                }
         }
         return null;
     }
