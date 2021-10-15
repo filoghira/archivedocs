@@ -21,13 +21,9 @@ public class MainController implements Initializable
 {
 
     @FXML
-    private URL url;
-    @FXML
-    private  ResourceBundle resourceBundle;
-    @FXML
     private Stage primaryStage;
     @FXML
-    private TreeView tagTree;
+    private TreeView<Node> tagTree;
 
     private static Archive archive;
 
@@ -37,31 +33,31 @@ public class MainController implements Initializable
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.url = url;
-        this.resourceBundle = resourceBundle;
-
+        if(tagTree!=null)
+            setTagTree(archive.getTagTree());
     }
 
     public void setTagTree(Node tags){
-        tagTree = new TreeView();
         TreeItem rootItem = new TreeItem("Tags");
         if(tags.getChildren()!=null)
             for (Node n:tags.getChildren())
                 addNodes(rootItem, n);
-            addNodes(rootItem, tags);
         tagTree.setRoot(rootItem);
     }
 
-    TreeItem addNodes(TreeItem rootItem, Node tags){
+    // Recursively creates a TreeItem for each tag and adds it to its root
+    void addNodes(TreeItem rootItem, Node tags){
         List<Node> children = tags.getChildren();
-        if(children==null)
-            rootItem.getChildren().add(tags);
+        // If it's the last item just add it
+        if(children.isEmpty())
+            rootItem.getChildren().add(new TreeItem(tags.getData().getName()));
         else{
+            // Otherwise, add each child to the root
             TreeItem son = new TreeItem(tags.getData().getName());
             for (Node n : children)
                 addNodes(son, n);
+            rootItem.getChildren().add(son);
         }
-        return rootItem;
     }
 
     public void setArchive(Archive archive){

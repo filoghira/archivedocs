@@ -23,10 +23,7 @@ public class Main extends Application {
         controller = new MainController();
         archive = new Archive("test");
 
-        archive.addTag("piero", "franco");
-
         controller.setArchive(archive);
-        controller.setTagTree(archive.getTagTree());
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Archive");
         controller.setPrimaryStage(primaryStage);
