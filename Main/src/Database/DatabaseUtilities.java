@@ -39,21 +39,11 @@ public class DatabaseUtilities {
                 Files.createDirectories(archivesDir);
 
             // Try to connect to the database. If the connection fails it creates a new database
-            try{
-                connection = DriverManager.getConnection(protocol + homePath + "\\" + userName
-                        + ";create=true"
-                        + ";user=" + userName
-                        + ";password=" + password
-                        + ";shutdown=true");
-            }catch (SQLException e){
-                if(e.getSQLState().equals("XJ004"))
-                    connection = DriverManager.getConnection(protocol + homePath + "\\" + userName
-                            + ";create=true"
-                            + ";user=" + userName
-                            + ";password=" + password);
-                else
-                    SQLUtils.printSQLException(e);
-            }
+            connection = DriverManager.getConnection(protocol + homePath + "\\" + userName
+                    + ";create=true"
+                    + ";user=" + userName
+                    + ";password=" + password
+                    + ";shutdown=true");
 
             // Checks if main table exists. If it doesn't it creates it
             addTable(mainTable, new Column[] {DocumentsTable.fileName, DocumentsTable.filePath, DocumentsTable.fileHash});
