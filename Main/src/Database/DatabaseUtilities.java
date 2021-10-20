@@ -42,8 +42,7 @@ public class DatabaseUtilities {
             connection = DriverManager.getConnection(protocol + homePath + "\\" + userName
                     + ";create=true"
                     + ";user=" + userName
-                    + ";password=" + password
-                    + ";shutdown=true");
+                    + ";password=" + password);
 
             // Checks if main table exists. If it doesn't it creates it
             addTable(mainTable, new Column[] {DocumentsTable.fileName, DocumentsTable.filePath, DocumentsTable.fileHash});
