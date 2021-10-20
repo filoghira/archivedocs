@@ -20,7 +20,7 @@ public class Archive {
 
     private List<Document> documents;
     private final Node tagTree = new Node(null);
-    private final DatabaseUtilities db;
+    private DatabaseUtilities db;
     private static final String documentsStorage = "\\docs";
 
     public Archive(String username, String password){
@@ -206,15 +206,16 @@ public class Archive {
 
             List<Document> documents = new ArrayList<>();
 
-            // Go through result set and create documents
-            while (rs.next()) {
-                int id = rs.getInt(1);
-                String fileName = rs.getString(2);
-                String filePath = rs.getString(3);
-                String hash = rs.getString(4);
+            if(rs!=null)
+                // Go through result set and create documents
+                while (rs.next()) {
+                    int id = rs.getInt(1);
+                    String fileName = rs.getString(2);
+                    String filePath = rs.getString(3);
+                    String hash = rs.getString(4);
 
-                documents.add(new Document(id, null, fileName, Paths.get(filePath), hash));
-            }
+                    documents.add(new Document(id, null, fileName, Paths.get(filePath), hash));
+                }
 
             // Update the document list
             this.documents = documents;
@@ -245,13 +246,14 @@ public class Archive {
             // List that contains the data extracted from the DB
             List<String[]> pendingTags = new ArrayList<>();
 
-            // Go through result set and get the data
-            while (rs.next())
-                pendingTags.add(new String[]{
-                        String.valueOf(rs.getInt("ID")),
-                        rs.getString(TagsTable.tagName.name()),
-                        String.valueOf(rs.getInt(TagsTable.tagParentID.name()))
-                });
+            if(rs!=null)
+                // Go through result set and get the data
+                while (rs.next())
+                    pendingTags.add(new String[]{
+                            String.valueOf(rs.getInt("ID")),
+                            rs.getString(TagsTable.tagName.name()),
+                            String.valueOf(rs.getInt(TagsTable.tagParentID.name()))
+                    });
 
             // Convert raw data in a list of tags
             while(!pendingTags.isEmpty())
@@ -291,6 +293,11 @@ public class Archive {
 
     public Node getTagTree(){
         return tagTree;
+    }
+
+    public void logout(){
+        db.closeConnection();
+        db = null;
     }
 
     /**

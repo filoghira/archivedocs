@@ -24,6 +24,8 @@ public class DatabaseUtilities {
     public DatabaseUtilities(String userName, String password)
     {
 
+        // Set derby preallocator to 1
+        System.setProperty("derby.language.sequence.preallocator", String.valueOf(1));
         dbName = userName;
         loadDatabaseDriver("org.apache.derby.jdbc.EmbeddedDriver");
 
@@ -37,10 +39,21 @@ public class DatabaseUtilities {
                 Files.createDirectories(archivesDir);
 
             // Try to connect to the database. If the connection fails it creates a new database
-            connection = DriverManager.getConnection(protocol + homePath + "\\" + userName
-                    + ";create=true"
-                    + ";user=" + userName
-                    + ";password=" + password);
+            try{
+                connection = DriverManager.getConnection(protocol + homePath + "\\" + userName
+                        + ";create=true"
+                        + ";user=" + userName
+                        + ";password=" + password
+                        + ";shutdown=true");
+            }catch (SQLException e){
+                if(e.getSQLState().equals("XJ004"))
+                    connection = DriverManager.getConnection(protocol + homePath + "\\" + userName
+                            + ";create=true"
+                            + ";user=" + userName
+                            + ";password=" + password);
+                else
+                    SQLUtils.printSQLException(e);
+            }
 
             // Checks if main table exists. If it doesn't it creates it
             addTable(mainTable, new Column[] {DocumentsTable.fileName, DocumentsTable.filePath, DocumentsTable.fileHash});
@@ -73,7 +86,7 @@ public class DatabaseUtilities {
 
         // Prepare the query
         StringBuilder query = new StringBuilder("CREATE TABLE " + name + " ("
-                + "Id INT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), ");
+                + "Id INT NOT NULL GENERATED ALWAYS AS IDENTITY(Start with 1, Increment by 1), ");
 
         // Run through the list of columns and update the query
         int i=0;
