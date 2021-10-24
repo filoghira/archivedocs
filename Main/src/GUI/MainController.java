@@ -1,34 +1,38 @@
 package GUI;
 
-import GhiraUtils.FileAlreadyInArchiveException;
-import GhiraUtils.FileNotFoundException;
-import javafx.event.ActionEvent;
+import Main.Archive;
+import Main.Document;
+import Main.Node;
+import Main.Tag;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import Main.Archive;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import Main.Node;
 
-import java.io.File;
 import java.net.URL;
-import java.util.*;
+import java.nio.file.Path;
+import java.util.Date;
+import java.util.List;
+import java.util.ResourceBundle;
 
 
 public class MainController implements Initializable
 {
 
-    @FXML
-    private Stage primaryStage;
-    @FXML
-    private TreeView<Node> tagTree;
+    @FXML private TreeView<Node> tagTree;
+    @FXML private TableView<Document> fileTable;
+    @FXML private TableColumn<Document, String> name;
+    @FXML private TableColumn<Document, Date> date;
+    @FXML private TableColumn<Document, Integer> size;
+    @FXML private TableColumn<Document, Path> path;
 
     private static Archive archive;
+    private static Main mainApp;
 
-    public void setPrimaryStage(Stage primaryStage){
-        this.primaryStage = primaryStage;
+    public void setMainApp(Main mainApp){
+        this.mainApp = mainApp;
     }
 
     @Override
@@ -46,14 +50,14 @@ public class MainController implements Initializable
     }
 
     // Recursively creates a TreeItem for each tag and adds it to its root
-    void addNodes(TreeItem rootItem, Node tags){
+    void addNodes(TreeItem<String> rootItem, Node tags){
         List<Node> children = tags.getChildren();
         // If it's the last item just add it
         if(children.isEmpty())
-            rootItem.getChildren().add(new TreeItem(tags.getData().getName()));
+            rootItem.getChildren().add(new TreeItem<String>(tags.getData().getName()));
         else{
             // Otherwise, add each child to the root
-            TreeItem son = new TreeItem(tags.getData().getName());
+            TreeItem<String> son = new TreeItem(tags.getData().getName());
             for (Node n : children)
                 addNodes(son, n);
             rootItem.getChildren().add(son);
@@ -65,18 +69,19 @@ public class MainController implements Initializable
     }
 
     @FXML
-    private void chooseFile(ActionEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        File selectedFile = fileChooser.showOpenDialog(primaryStage);
-        if(selectedFile!=null) {
-            try {
-                archive.addDocument(selectedFile.getName(), selectedFile.toPath());
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (FileAlreadyInArchiveException e) {
-                System.out.println("File già presente nell'archivio");
-            }
-        }
+    private void logout(){
+        archive.logout();
+        System.exit(0);
+    }
+
+    @FXML
+    private void addDocument(){
+        mainApp.showAddDocument();
+    }
+
+    @FXML
+    private void addTag(){
+
     }
 
 }

@@ -15,20 +15,27 @@ public class Main extends Application {
 
     private Stage primaryStage;
     private BorderPane rootLayout;
-    private MainController controller;
+    private MainController mainController;
+    private AddDocumentController addDocumentController;
     private Archive archive;
 
     @Override
     public void start(Stage primaryStage){
-        controller = new MainController();
         archive = new Archive("test");
 
-        controller.setArchive(archive);
+        mainController = new MainController();
+        mainController.setArchive(archive);
+
+        addDocumentController = new AddDocumentController();
+        addDocumentController.setArchive(archive);
+
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Archive");
-        controller.setPrimaryStage(primaryStage);
 
         initRootLayout();
+        mainController.setMainApp(this);
+        addDocumentController.setMainApp(this);
+
         showFileOverview();
     }
 
@@ -63,6 +70,20 @@ public class Main extends Application {
 
             // Set person overview into the center of root layout.
             rootLayout.setCenter(fileOverview);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showAddDocument(){
+        try {
+            // Load person overview.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("view/AddDocument.fxml"));
+            AnchorPane addDocumentOverview = loader.load();
+
+            // Set person overview into the center of root layout.
+            rootLayout.setCenter(addDocumentOverview);
         } catch (IOException e) {
             e.printStackTrace();
         }

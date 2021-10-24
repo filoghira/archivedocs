@@ -1,0 +1,7 @@
+.split-pane *.split-pane-divider {
+    -fx-padding: 0 1 0 1;
+}
+
+.table-view .column-header {
+    -fx-pref-height: 25;
+}
