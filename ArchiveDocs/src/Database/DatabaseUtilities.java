@@ -2,7 +2,6 @@ package Database;
 
 import GhiraUtils.General;
 import GhiraUtils.SQLUtils;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,7 +11,8 @@ import static GhiraUtils.SQLUtils.printSQLException;
 
 public class DatabaseUtilities {
 
-    static String protocol = "jdbc:derby:";
+    static final String protocol = "jdbc:derby:";
+    static final String driverName = "org.apache.derby.jdbc.EmbeddedDriver";
 
     private final String dbName;
     private Connection connection = null;
@@ -27,13 +27,13 @@ public class DatabaseUtilities {
         // Set derby preallocator to 1
         System.setProperty("derby.language.sequence.preallocator", String.valueOf(1));
         dbName = userName;
-        loadDatabaseDriver("org.apache.derby.jdbc.EmbeddedDriver");
+        loadDatabaseDriver(driverName);
 
         try{
 
             String homePath = General.homePath() + defaultFolder;
 
-            // If the main directory where the databases are stored does not exists, create it
+            // If the main directory where the databases are stored does not exist, create it
             Path archivesDir = Paths.get(homePath);
             if(!Files.isDirectory(archivesDir))
                 Files.createDirectories(archivesDir);
@@ -67,7 +67,7 @@ public class DatabaseUtilities {
     }
 
     /**
-     * Create a SQL table. By default there's an Identity Column
+     * Create an SQL table. By default, there's an Identity Column
      * @param name Name of the table
      * @param col String matrix. Each row contains the name of the column and the data type
      */
@@ -87,13 +87,13 @@ public class DatabaseUtilities {
         query.append("PRIMARY KEY(Id))");
 
         // Create the statement
-        PreparedStatement pstmt;
+        PreparedStatement statement;
         try {
             // Execute the query and close it
-            pstmt = connection.prepareStatement(query.toString(), PreparedStatement.RETURN_GENERATED_KEYS );
+            statement = connection.prepareStatement(query.toString(), PreparedStatement.RETURN_GENERATED_KEYS );
             System.out.println("Executing query:\n" + query);
-            pstmt.executeUpdate();
-            pstmt.close();
+            statement.executeUpdate();
+            statement.close();
         } catch (SQLException e) {
             SQLUtils.printSQLException(e);
         }
@@ -140,17 +140,17 @@ public class DatabaseUtilities {
         // Concatenate the strings
         query.append(partialQuery);
         // Prepare the statement
-        PreparedStatement pstmt;
+        PreparedStatement statement;
 
         try {
             // Execute the statement and get as result the ID of the item that has just been added
             System.out.println("Executing query:\n" + query);
-            pstmt = connection.prepareStatement(query.toString(), PreparedStatement.RETURN_GENERATED_KEYS );
-            pstmt.executeUpdate();
-            ResultSet rs = pstmt.getGeneratedKeys();
+            statement = connection.prepareStatement(query.toString(), PreparedStatement.RETURN_GENERATED_KEYS );
+            statement.executeUpdate();
+            ResultSet rs = statement.getGeneratedKeys();
             rs.next();
             int out = rs.getInt(1);
-            pstmt.close();
+            statement.close();
             return out;
         } catch (SQLException e) {
             SQLUtils.printSQLException(e);
@@ -168,13 +168,13 @@ public class DatabaseUtilities {
         StringBuilder query = new StringBuilder("DELETE FROM " + tableName + " WHERE ID="+id);
 
         // Prepare the statement
-        PreparedStatement pstmt;
+        PreparedStatement statement;
 
         try {
             // Execute the statement and get as result the ID of the item that has just been added
             System.out.println("Executing query:\n" + query);
-            pstmt = connection.prepareStatement(query.toString(), PreparedStatement.RETURN_GENERATED_KEYS );
-            pstmt.executeUpdate();
+            statement = connection.prepareStatement(query.toString(), PreparedStatement.RETURN_GENERATED_KEYS );
+            statement.executeUpdate();
         } catch (SQLException e) {
             SQLUtils.printSQLException(e);
         }
@@ -183,7 +183,7 @@ public class DatabaseUtilities {
     /**
      *
      * @param tableName Name of the table
-     * @return A resultSet containing all of the data in the table
+     * @return A resultSet containing all the data in the table
      */
     public ResultSet getAllFromTable(String tableName){
         String query = "SELECT * FROM " + tableName;

@@ -1,27 +1,25 @@
 package GUI;
 
 import Main.Archive;
-import Main.Document;
 import Main.Node;
-import Main.Tag;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-
 import java.net.URL;
-import java.nio.file.Path;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.nio.file.Path;
+import java.util.Date;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import Main.Document;
 
 
 public class MainController implements Initializable
 {
 
-    @FXML private TreeView<Node> tagTree;
+    @FXML private TreeView<String> tagTree;
     @FXML private TableView<Document> fileTable;
     @FXML private TableColumn<Document, String> name;
     @FXML private TableColumn<Document, Date> date;
@@ -29,10 +27,10 @@ public class MainController implements Initializable
     @FXML private TableColumn<Document, Path> path;
 
     private static Archive archive;
-    private static Main mainApp;
+    private static App appApp;
 
-    public void setMainApp(Main mainApp){
-        this.mainApp = mainApp;
+    public void setMainApp(App appApp){
+        MainController.appApp = appApp;
     }
 
     @Override
@@ -42,7 +40,7 @@ public class MainController implements Initializable
     }
 
     public void setTagTree(Node tags){
-        TreeItem rootItem = new TreeItem("Tags");
+        TreeItem<String> rootItem = new TreeItem<>("Tags");
         if(tags.getChildren()!=null)
             for (Node n:tags.getChildren())
                 addNodes(rootItem, n);
@@ -54,10 +52,10 @@ public class MainController implements Initializable
         List<Node> children = tags.getChildren();
         // If it's the last item just add it
         if(children.isEmpty())
-            rootItem.getChildren().add(new TreeItem<String>(tags.getData().getName()));
+            rootItem.getChildren().add(new TreeItem<>(tags.getData().getName()));
         else{
             // Otherwise, add each child to the root
-            TreeItem<String> son = new TreeItem(tags.getData().getName());
+            TreeItem<String> son = new TreeItem<>(tags.getData().getName());
             for (Node n : children)
                 addNodes(son, n);
             rootItem.getChildren().add(son);
@@ -76,12 +74,10 @@ public class MainController implements Initializable
 
     @FXML
     private void addDocument(){
-        mainApp.showAddDocument();
+        appApp.showAddDocument();
     }
 
     @FXML
-    private void addTag(){
-
-    }
+    private void addTag(){}
 
 }

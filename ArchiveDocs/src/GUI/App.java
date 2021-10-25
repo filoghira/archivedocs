@@ -11,13 +11,15 @@ import java.io.IOException;
 
 import Main.Archive;
 
-public class Main extends Application {
+public class App extends Application {
 
     private Stage primaryStage;
     private BorderPane rootLayout;
     private MainController mainController;
     private AddDocumentController addDocumentController;
     private Archive archive;
+
+    public App(){}
 
     @Override
     public void start(Stage primaryStage){
@@ -46,8 +48,8 @@ public class Main extends Application {
         try {
             // Load root layout from fxml file.
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("view/RootLayout.fxml"));
-            rootLayout = loader.load();
+            loader.setLocation(App.class.getResource("view/RootLayout.fxml"));
+            rootLayout = loader .load();
 
             // Show the scene containing the root layout.
             Scene scene = new Scene(rootLayout);
@@ -65,7 +67,7 @@ public class Main extends Application {
         try {
             // Load person overview.
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("view/FileOverview.fxml"));
+            loader.setLocation(App.class.getResource("view/FileOverview.fxml"));
             AnchorPane fileOverview = loader.load();
 
             // Set person overview into the center of root layout.
@@ -79,7 +81,7 @@ public class Main extends Application {
         try {
             // Load person overview.
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("view/AddDocument.fxml"));
+            loader.setLocation(App.class.getResource("view/AddDocument.fxml"));
             AnchorPane addDocumentOverview = loader.load();
 
             // Set person overview into the center of root layout.
