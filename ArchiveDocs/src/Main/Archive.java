@@ -128,7 +128,8 @@ public class Archive {
         File file = document.getPath().toFile();
 
         if(file.exists())
-            file.delete();
+            if(!file.delete())
+                System.out.println("The document "+document+" located in "+document.getPath()+" was NOT deleted");
     }
 
     /**
