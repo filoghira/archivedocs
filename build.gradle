@@ -8,13 +8,13 @@ application {
 }
 
 dependencies {
-    implementation 'org.controlsfx:controlsfx:17.0.0.1'
+    implementation 'org.controlsfx:controlsfx:11.1.0'
     implementation 'org.apache.derby:derby:10.15.2.0'
     implementation 'org.apache.derby:derbytools:10.15.2.0'
 }
 
 javafx {
-    version = "11.0.2"
+    version = "17.0.1"
     modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.base']
 }
 

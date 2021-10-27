@@ -2,13 +2,16 @@ package GUI;
 
 import GhiraUtils.FileAlreadyInArchiveException;
 import GhiraUtils.FileNotFoundException;
+import Main.Archive;
 import javafx.fxml.FXML;
 import javafx.stage.FileChooser;
+import org.controlsfx.control.CheckComboBox;
 
 import java.io.File;
-import Main.Archive;
 
 public class AddDocumentController {
+
+    @FXML private CheckComboBox<String> tagsComboBox;
 
     private static App appApp;
     private static Archive archive;

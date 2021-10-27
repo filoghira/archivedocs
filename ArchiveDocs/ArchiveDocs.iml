@@ -7,13 +7,14 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Gradle: org.openjfx:javafx-graphics:win:11.0.2" level="project" />
-    <orderEntry type="library" name="Gradle: org.openjfx:javafx-fxml:win:11.0.2" level="project" />
-    <orderEntry type="library" name="Gradle: org.openjfx:javafx-controls:win:11.0.2" level="project" />
-    <orderEntry type="library" name="Gradle: org.openjfx:javafx-base:win:11.0.2" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.derby:derby:10.15.2.0" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.derby:derbyshared:10.15.2.0" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.derby:derbyclient:10.15.2.0" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.derby:derbytools:10.15.2.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.controlsfx:controlsfx:11.1.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.openjfx:javafx-fxml:win:17.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.openjfx:javafx-controls:win:17.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.openjfx:javafx-graphics:win:17.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.openjfx:javafx-base:win:17.0.1" level="project" />
   </component>
 </module>
