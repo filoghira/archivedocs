@@ -123,4 +123,22 @@ public class Node {
             for(Node n : children)
                 n.print(depth+1);
     }
+
+    /**
+     * Returns the leaves at the very end of the current node
+     * @return List of nodes
+     */
+    public List<Node> getLeaves() {
+        List<Node> out = new ArrayList<>();
+        if(children.isEmpty())
+            out.add(this);
+        else
+            for (Node n : children)
+                out.addAll(n.getLeaves());
+        return out;
+    }
+
+    public String toString() {
+        return data.getName();
+    }
 }

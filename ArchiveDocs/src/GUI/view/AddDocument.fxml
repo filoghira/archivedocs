@@ -83,7 +83,7 @@
                               </AnchorPane>
                            </items>
                         </SplitPane>
-                        <SplitPane dividerPositions="0.29797979797979796" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="200.0">
+                        <SplitPane dividerPositions="0.29797979797979796" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" prefWidth="200.0">
                            <items>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                  <children>
@@ -96,7 +96,7 @@
                               </AnchorPane>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                  <children>
-                                    <CheckComboBox prefHeight="98.4" prefWidth="419.2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    <CheckComboBox fx:id="tagsComboBox" prefHeight="98.4" prefWidth="419.2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                  </children>
                               </AnchorPane>
                            </items>
