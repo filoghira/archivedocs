@@ -4,7 +4,7 @@ plugins {
 }
 
 application {
-    mainClass.set('ArchiveDocs.GUI.Main')
+    mainClass.set('GUI.Main')
 }
 
 dependencies {
