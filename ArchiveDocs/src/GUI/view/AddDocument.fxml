@@ -38,7 +38,7 @@
                               </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                  <children>
-                                    <TextField layoutX="14.0" layoutY="79.0" prefHeight="158.4" prefWidth="419.2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    <TextField fx:id="docName" layoutX="14.0" layoutY="79.0" prefHeight="158.4" prefWidth="419.2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                  </children>
                               </AnchorPane>
                           </items>
@@ -56,7 +56,7 @@
                               </AnchorPane>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                  <children>
-                                    <Label alignment="CENTER" prefHeight="24.0" prefWidth="419.2" textFill="#000000d9" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <Label fx:id="docPath" alignment="CENTER" prefHeight="24.0" prefWidth="419.2" textFill="#000000d9" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <font>
                                           <Font name="System Italic" size="12.0" />
                                        </font>
@@ -78,7 +78,7 @@
                               </AnchorPane>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                  <children>
-                                    <TextArea prefHeight="24.0" prefWidth="419.2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    <TextArea fx:id="docDesc" prefHeight="24.0" prefWidth="419.2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                  </children>
                               </AnchorPane>
                            </items>
@@ -101,6 +101,16 @@
                               </AnchorPane>
                            </items>
                         </SplitPane>
+                        <AnchorPane maxHeight="500.0" minHeight="30.0" prefHeight="500.0" prefWidth="200.0" />
+                        <AnchorPane maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="200.0">
+                           <children>
+                              <Label fx:id="error" alignment="CENTER" prefHeight="35.0" prefWidth="600.0" textFill="RED">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
                      </children>
                   </VBox>
                </children>
@@ -114,7 +124,7 @@
                               <Insets right="100.0" />
                            </HBox.margin>
                         </Button>
-                        <Button mnemonicParsing="false" text="Add" />
+                        <Button mnemonicParsing="false" onAction="#add" text="Add" />
                         <Button mnemonicParsing="false" onAction="#goBack" text="Cancel">
                            <HBox.margin>
                               <Insets left="100.0" />

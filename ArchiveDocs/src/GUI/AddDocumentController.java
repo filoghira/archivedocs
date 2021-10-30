@@ -1,28 +1,43 @@
 package GUI;
 
+import Database.DatabaseUtilities;
 import GhiraUtils.FileAlreadyInArchiveException;
 import GhiraUtils.FileNotFoundException;
 import Main.Archive;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import org.controlsfx.control.CheckComboBox;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import Main.Node;
+import Main.Tag;
+
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class AddDocumentController implements Initializable {
 
     @FXML private CheckComboBox<String> tagsComboBox;
+    @FXML private TextField docName;
+    @FXML private Label docPath;
+    @FXML private TextArea docDesc;
+    @FXML private Label error;
 
     private static App appApp;
     private static Archive archive;
-
-
+    private File selectedFile;
+    private ObservableList<String> selectedTags;
 
     public void setArchive(Archive archive){
         AddDocumentController.archive = archive;
@@ -38,12 +53,32 @@ public class AddDocumentController implements Initializable {
         File selectedFile = fileChooser.showOpenDialog(appApp.getPrimaryStage());
         if(selectedFile!=null) {
             try {
-                archive.addDocument(selectedFile.getName(), selectedFile.toPath());
-            } catch (FileNotFoundException e) {
+                if(archive.documentExists(GhiraUtils.General.checksum(selectedFile.getPath(), DatabaseUtilities.cryptAlgorithm)))
+                    error.setText("Il documento è già presente in archivio");
+                else{
+                    this.selectedFile = selectedFile;
+                    docName.setText(selectedFile.getName().substring(0, selectedFile.getName().lastIndexOf(".")));
+                    docPath.setText(selectedFile.getPath());
+                }
+            } catch (IOException e) {
                 e.printStackTrace();
-            } catch (FileAlreadyInArchiveException e) {
-                System.out.println("File già presente nell'archivio");
             }
+        }
+
+    }
+
+    @FXML
+    private void add(){
+        try {
+            List<Tag> tags = new ArrayList<>();
+            for(String t : selectedTags)
+                tags.add(archive.getTagTree().getNode(t).getData());
+
+            archive.addDocument(tags, selectedFile.getName(), Path.of(selectedFile.getPath()));
+        } catch (FileNotFoundException e) {
+            error.setText("Il documento è stato rimosso dalla cartella d'origine");
+        } catch (FileAlreadyInArchiveException e) {
+            error.setText("Il documento è già presente in archivio");
         }
     }
 
@@ -54,13 +89,18 @@ public class AddDocumentController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // If the combobox has been initialized
         if(tagsComboBox!=null){
-            // Ottengo tutte le foglie dell'albero tags e le converto in stringhe per poi aggiungerle alla comboBox
+            // Get the tags that are leaves and convert them to string
             ObservableList<String> items = FXCollections.observableArrayList();
             for(Node n : archive.getTagTree().getLeaves())
-                items.add(n.toString());
-
+                items.add(n.getTagName());
+            // Add them to the combobox
             tagsComboBox.getItems().addAll(items);
+
+            tagsComboBox.getCheckModel().getCheckedItems().addListener(
+                    (ListChangeListener<String>) c -> selectedTags = tagsComboBox.getCheckModel().getCheckedItems()
+            );
         }
     }
 }

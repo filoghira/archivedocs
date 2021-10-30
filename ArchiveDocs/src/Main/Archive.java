@@ -49,25 +49,17 @@ public class Archive {
         // Hash the file
         String hash = null;
         try {
-            hash = General.checksum(path.toString(), "SHA-512");
+            hash = General.checksum(path.toString(), cryptAlgorithm);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         // Check if there's a file with the same hash in the archive
-        if(isInArchive(hash))
+        if(documentExists(hash))
             throw new FileAlreadyInArchiveException("The file named as "+name+" and located in "+path+" does not exist");
 
         // Create the document
         Document document = new Document(-2, tags, name, path, hash);
-
-        // For each tag add to its own document list the document
-        int i=0;
-        if(tags != null)
-            while (i < tags.size()) {
-                tags.get(i).addDocument(document);
-                i++;
-            }
 
         // Create the data array to be given to the SQL query
         String[][] data = new String[][] {
@@ -94,9 +86,14 @@ public class Archive {
 
         // Add the document ID (reference to the main table) to each table of each tag
         if(tags!=null) {
-            i=0;
-            while ( i<tags.size ())
-                db.addRow(tags.get(i).getName(), new String[][]{{TagColumns.mainID.name(), Integer.toString(document.getID())}});
+            int i=0;
+            while ( i<tags.size()) {
+                if (!tags.get(i).contains(document)) {
+                    tags.get(i).addDocument(document);
+                    db.addRow(tags.get(i).getName(), new String[][]{{TagColumns.mainID.name(), Integer.toString(document.getID()), TagColumns.mainID.type()}});
+                }
+                i++;
+            }
         }
 
         try {
@@ -137,7 +134,7 @@ public class Archive {
      * @param hash Hash of the document to be searched
      * @return True of it's already there, otherwise false
      */
-    boolean isInArchive(String hash){
+    public boolean documentExists(String hash){
         if(documents==null)
             return false;
         int i=0;
@@ -270,6 +267,17 @@ public class Archive {
                     }else if(tagTree.nodeExists(Integer.parseInt(rawTag[2]))){    // If the tag parent has already been created
                         tagTree.getNode(Integer.parseInt(rawTag[2])).addChild(new Node(new Tag(ID, rawTag[1])));
                         iter.remove();
+                    }
+
+                    Tag current = tagTree.getNode(rawTag[1]).getData();
+
+                    // For each tag add its documents
+                    ResultSet documents = db.getAllFromTable(rawTag[1]);
+                    if(documents != null){
+                        while(documents.next()) {
+                            current.addDocument(getDocument(documents.getInt(1)));
+                            current.addDocumentToParent(getDocument(documents.getInt(1)));
+                        }
                     }
                 }
 

@@ -138,7 +138,7 @@ public class Node {
         return out;
     }
 
-    public String toString() {
-        return data.getName();
+    public String getTagName() {
+        return data==null ? null : data.getName();
     }
 }

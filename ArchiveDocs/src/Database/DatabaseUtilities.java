@@ -13,6 +13,7 @@ public class DatabaseUtilities {
 
     static final String protocol = "jdbc:derby:";
     static final String driverName = "org.apache.derby.jdbc.EmbeddedDriver";
+    public static final String cryptAlgorithm = "SHA-512";
 
     private final String dbName;
     private Connection connection = null;

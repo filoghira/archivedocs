@@ -1,10 +1,11 @@
 package Main;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Tag {
 
-    private List<Document> documents;
+    private List<Document> documents = new ArrayList<>();
     private String name;
     private int ID;
 
@@ -43,4 +44,11 @@ public class Tag {
         return name;
     }
 
+    public boolean contains(Document document){
+        return documents.contains(document);
+    }
+
+    public void addDocumentToParent(Document document) {
+        //if(parent != null)
+    }
 }
