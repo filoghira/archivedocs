@@ -1,4 +1,4 @@
-package Main;
+package Core;
 
 import java.nio.file.Path;
 import java.util.List;

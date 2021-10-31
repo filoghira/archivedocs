@@ -1,7 +1,7 @@
 package GUI;
 
-import Main.Archive;
-import Main.Node;
+import Core.Archive;
+import Core.Node;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TreeItem;
@@ -13,7 +13,7 @@ import java.nio.file.Path;
 import java.util.Date;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import Main.Document;
+import Core.Document;
 
 
 public class MainController implements Initializable
