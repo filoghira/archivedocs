@@ -2,7 +2,6 @@ package Core;
 
 import Database.*;
 import GhiraUtils.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,8 +12,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import static Database.DatabaseUtilities.*;
 
 public class Archive {
 
@@ -49,7 +46,7 @@ public class Archive {
         // Hash the file
         String hash = null;
         try {
-            hash = General.checksum(path.toString(), cryptAlgorithm);
+            hash = General.checksum(path.toString(), DatabaseUtilities.cryptAlgorithm);
         } catch (IOException e) {
             e.printStackTrace();
         }
