@@ -71,8 +71,9 @@ public class AddDocumentController implements Initializable {
     private void add(){
         try {
             List<Tag> tags = new ArrayList<>();
-            for(String t : selectedTags)
-                tags.add(archive.getTagTree().getNode(t).getData());
+            if(selectedTags != null)
+                for(String t : selectedTags)
+                    tags.add(archive.getTagTree().getNode(t).getData());
 
             archive.addDocument(tags, selectedFile.getName(), Path.of(selectedFile.getPath()));
         } catch (FileNotFoundException e) {
@@ -90,17 +91,23 @@ public class AddDocumentController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // If the combobox has been initialized
-        if(tagsComboBox!=null){
-            // Get the tags that are leaves and convert them to string
-            ObservableList<String> items = FXCollections.observableArrayList();
-            for(Node n : archive.getTagTree().getLeaves())
-                items.add(n.getTagName());
-            // Add them to the combobox
-            tagsComboBox.getItems().addAll(items);
+        if(tagsComboBox!=null)
+            initTagsComboBox();
+    }
 
-            tagsComboBox.getCheckModel().getCheckedItems().addListener(
-                    (ListChangeListener<String>) c -> selectedTags = tagsComboBox.getCheckModel().getCheckedItems()
-            );
-        }
+    void initTagsComboBox(){
+        List<Node> tags = archive.getTagTree().getLeaves();
+        if(tags.size() <= 1)
+            return;
+        // Get the tags that are leaves and convert them to string
+        ObservableList<String> items = FXCollections.observableArrayList();
+        for(Node n : tags)
+            items.add(n.getTagName());
+        // Add them to the combobox
+        tagsComboBox.getItems().addAll(items);
+
+        tagsComboBox.getCheckModel().getCheckedItems().addListener(
+                (ListChangeListener<String>) c -> selectedTags = tagsComboBox.getCheckModel().getCheckedItems()
+        );
     }
 }
