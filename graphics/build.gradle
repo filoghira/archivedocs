@@ -1,0 +1,28 @@
+plugins {
+    // todo Controllare la differenza tra id 'application' e id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin'
+}
+
+version 'unspecified'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.controlsfx:controlsfx:11.1.0'
+    implementation project(':core')
+    implementation project(':utils')
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+javafx {
+    version = "17.0.1"
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.base']
+}
+
+test {
+    useJUnitPlatform()
+}

@@ -1,0 +1,14 @@
+pluginManagement {
+    plugins {
+        id 'org.openjfx.javafxplugin' version '0.0.10'
+    }
+}
+
+rootProject.name = 'archive-docs'
+
+include 'core'
+include 'database'
+include 'graphics'
+include 'utils'
+
+// todo Implementare ':utils' in ogni modulo del progetto
