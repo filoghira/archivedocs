@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.CheckComboBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@AddDocument.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AddDocumentController">
+<AnchorPane minWidth="600.0" prefHeight="400.0" prefWidth="600.0" stylesheets="@AddDocument.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AddDocumentController">
    <children>
       <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
@@ -20,11 +20,11 @@
                <children>
                   <VBox prefHeight="362.4" prefWidth="599.2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <AnchorPane maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="200.0">
+                        <HBox alignment="CENTER" maxHeight="30.0" minHeight="30.0" prefHeight="30.0">
                            <children>
                               <Label alignment="CENTER" prefHeight="35.0" prefWidth="600.0" text="Edit documents data" />
                            </children>
-                        </AnchorPane>
+                        </HBox>
                         <SplitPane dividerPositions="0.29797979797979796" maxHeight="25.0" minHeight="25.0" prefHeight="25.0" prefWidth="200.0">
                           <items>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
@@ -102,15 +102,15 @@
                            </items>
                         </SplitPane>
                         <AnchorPane maxHeight="500.0" minHeight="30.0" prefHeight="500.0" prefWidth="200.0" />
-                        <AnchorPane maxHeight="30.0" minHeight="30.0" prefHeight="30.0" prefWidth="200.0">
+                        <HBox alignment="CENTER" maxHeight="30.0" minHeight="30.0" prefHeight="30.0">
                            <children>
-                              <Label fx:id="error" alignment="CENTER" prefHeight="35.0" prefWidth="600.0" textFill="RED">
+                              <Label fx:id="error" alignment="CENTER" prefHeight="35.0" textFill="RED">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
                            </children>
-                        </AnchorPane>
+                        </HBox>
                      </children>
                   </VBox>
                </children>
