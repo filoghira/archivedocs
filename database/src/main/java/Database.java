@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
 
-public class DatabaseUtilities {
+public class Database {
 
     static final String protocol = "jdbc:derby:";
     static final String driverName = "org.apache.derby.jdbc.EmbeddedDriver";
@@ -17,7 +17,7 @@ public class DatabaseUtilities {
     static final String INT = "INT";
     public static final String defaultFolder = "\\archivedocs";
 
-    public DatabaseUtilities(String userName, String password)
+    public Database(String userName, String password)
     {
 
         // Set derby preallocator to 1
@@ -41,7 +41,7 @@ public class DatabaseUtilities {
                     + ";password=" + password);
 
             // Checks if main table exists. If it doesn't it creates it
-            addTable(mainTable, new Column[] {DocumentsTable.fileName, DocumentsTable.filePath, DocumentsTable.fileHash});
+            addTable(mainTable, new Column[] {DocumentsTable.fileName, DocumentsTable.filePath, DocumentsTable.fileHash, DocumentsTable.fileDesc});
             addTable(tagsTable, new Column[] {TagsTable.tagName, TagsTable.tagParentID});
 
         } catch (SQLException e) {

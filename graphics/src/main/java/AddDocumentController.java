@@ -68,7 +68,7 @@ public class AddDocumentController implements Initializable {
                 for(String t : selectedTags)
                     tags.add(archive.getTagTree().getNode(t).getData());
 
-            archive.addDocument(tags, selectedFile.getName(), Path.of(selectedFile.getPath()));
+            archive.addDocument(tags, selectedFile.getName(), Path.of(selectedFile.getPath()), docDesc.getText());
         } catch (FileNotFoundException e) {
             error.setText("Il documento è stato rimosso dalla cartella d'origine");
         } catch (FileAlreadyInArchiveException e) {

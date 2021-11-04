@@ -7,14 +7,16 @@ public class Document {
     private final String hash;
     private final String name;
     private final Path path;
+    private String description;
     private int ID;
 
-    public Document(int ID, List<Tag> tags, String name, Path path, String hash){
+    public Document(int ID, List<Tag> tags, String name, Path path, String hash, String description){
         this.ID = ID;
         this.tags = tags;
         this.name = name;
         this.path = path;
         this.hash = hash;
+        this.description = description;
     }
 
     /**

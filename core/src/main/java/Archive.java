@@ -13,16 +13,16 @@ public class Archive {
 
     private List<Document> documents;
     private final Node tagTree = new Node(null);
-    private DatabaseUtilities db;
+    private Database db;
     private static final String documentsStorage = "\\docs";
 
     public Archive(String username, String password){
-        db = new DatabaseUtilities(username, password);
+        db = new Database(username, password);
         init();
     }
 
     public Archive(String username){
-        db = new DatabaseUtilities(username, "");
+        db = new Database(username, "");
         init();
     }
 
@@ -32,7 +32,7 @@ public class Archive {
      * @param name Name of the document
      * @param path Path of the file
      */
-    public void addDocument(List<Tag> tags, String name, Path path) throws FileNotFoundException, FileAlreadyInArchiveException {
+    public void addDocument(List<Tag> tags, String name, Path path, String description) throws FileNotFoundException, FileAlreadyInArchiveException {
 
         // Check if the file exists in the filesystem
         File tempFile = new File(path.toString());
@@ -42,7 +42,7 @@ public class Archive {
         // Hash the file
         String hash = null;
         try {
-            hash = General.checksum(path.toString(), DatabaseUtilities.cryptAlgorithm);
+            hash = General.checksum(path.toString(), Database.cryptAlgorithm);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -52,7 +52,7 @@ public class Archive {
             throw new FileAlreadyInArchiveException("The file named as "+name+" and located in "+path+" does not exist");
 
         // Create the document
-        Document document = new Document(-2, tags, name, path, hash);
+        Document document = new Document(-2, tags, name, path, hash, description);
 
         // Create the data array to be given to the SQL query
         String[][] data = new String[][] {
@@ -70,11 +70,16 @@ public class Archive {
                 DocumentsTable.fileHash.name(),
                 hash,
                 DocumentsTable.fileHash.type()
+            },
+            {
+                DocumentsTable.fileDesc.name(),
+                description,
+                DocumentsTable.fileDesc.type()
             }
         };
 
         // Add the document to the db
-        int id = db.addRow(DatabaseUtilities.mainTable, data);
+        int id = db.addRow(Database.mainTable, data);
         document.setID(id);
 
         // Add the document ID (reference to the main table) to each table of each tag
@@ -91,7 +96,7 @@ public class Archive {
 
         try {
             // Check if the folder where documents are stored has already been created
-            Path docsDir = Paths.get(General.homePath() + DatabaseUtilities.defaultFolder + documentsStorage);
+            Path docsDir = Paths.get(General.homePath() + Database.defaultFolder + documentsStorage);
             if(!Files.isDirectory(docsDir))
                 Files.createDirectories(docsDir);
             // Copy the file in the folder
@@ -104,7 +109,15 @@ public class Archive {
     }
 
     public void addDocument(String name, Path path) throws FileNotFoundException, FileAlreadyInArchiveException {
-        addDocument(null, name, path);
+        addDocument(null, name, path, "");
+    }
+
+    public void addDocument(String name, Path path, String description) throws FileNotFoundException, FileAlreadyInArchiveException {
+        addDocument(null, name, path, description);
+    }
+
+    public void addDocument(String name, Path path, List<Tag> tags) throws FileNotFoundException, FileAlreadyInArchiveException {
+        addDocument(tags, name, path, "");
     }
 
     public void removeDocument(Document document) {
@@ -113,7 +126,7 @@ public class Archive {
 
         documents.remove(document);
 
-        db.deleteRow(DatabaseUtilities.mainTable, document.getID());
+        db.deleteRow(Database.mainTable, document.getID());
 
         File file = document.getPath().toFile();
 
@@ -169,7 +182,7 @@ public class Archive {
             };
 
         // Add the document to the db
-        tag.setID(db.addRow(DatabaseUtilities.tagsTable, data));
+        tag.setID(db.addRow(Database.tagsTable, data));
 
         // Create the table of the tag
         db.addTable(name, new Column[] {TagColumns.mainID});
@@ -191,7 +204,7 @@ public class Archive {
     void updateDocumentsFromDB(){
 
         // SELECT every document from the main table in the database
-        ResultSet rs = db.getAllFromTable(DatabaseUtilities.mainTable);
+        ResultSet rs = db.getAllFromTable(Database.mainTable);
 
         try {
 
@@ -204,8 +217,9 @@ public class Archive {
                     String fileName = rs.getString(2);
                     String filePath = rs.getString(3);
                     String hash = rs.getString(4);
+                    String description = rs.getString(5);
 
-                    documents.add(new Document(id, null, fileName, Paths.get(filePath), hash));
+                    documents.add(new Document(id, null, fileName, Paths.get(filePath), hash, description));
                 }
 
             // Update the document list
@@ -230,7 +244,7 @@ public class Archive {
     void updateTagsFromDB(){
 
         // Get the table data
-        ResultSet rs = db.getAllFromTable(DatabaseUtilities.tagsTable);
+        ResultSet rs = db.getAllFromTable(Database.tagsTable);
 
         try {
 
