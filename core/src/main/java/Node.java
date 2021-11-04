@@ -43,6 +43,8 @@ public class Node {
     }
 
     public boolean nodeExists(String tagName) {
+        if(tagName == null || tagName.isEmpty())
+            return false;
         if(tagName.equals("root"))
             return true;
         if (data == null)

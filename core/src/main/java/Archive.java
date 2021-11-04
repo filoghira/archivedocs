@@ -108,18 +108,6 @@ public class Archive {
         }
     }
 
-    public void addDocument(String name, Path path) throws FileNotFoundException, FileAlreadyInArchiveException {
-        addDocument(null, name, path, "");
-    }
-
-    public void addDocument(String name, Path path, String description) throws FileNotFoundException, FileAlreadyInArchiveException {
-        addDocument(null, name, path, description);
-    }
-
-    public void addDocument(String name, Path path, List<Tag> tags) throws FileNotFoundException, FileAlreadyInArchiveException {
-        addDocument(tags, name, path, "");
-    }
-
     public void removeDocument(Document document) {
         if(!documents.contains(document))
             return;
@@ -157,7 +145,11 @@ public class Archive {
      * @param documents The list of the documents that belongs to the new tag
      * @param name Name of the tag
      */
-    public void addTag(List<Document> documents, String name, String parentName){
+    public void addTag(List<Document> documents, String name, String parentName, String description) {
+
+        // TODO: 04/11/2021 Gestire gli errori con le Exception
+        if(parentName == null)
+            parentName = "root";
 
         // If the tag already exists or if the parent tag doesn't
         if(tagTree.nodeExists(name) || !tagTree.nodeExists(parentName))
@@ -178,7 +170,8 @@ public class Archive {
         // Create the data array to be given to the SQL query
         String[][] data = {
                 {TagsTable.tagName.name(), name, TagsTable.tagName.type()},
-                {TagsTable.tagParentID.name(), Integer.toString(getTagID(parentName)), TagsTable.tagParentID.type()}
+                {TagsTable.tagParentID.name(), Integer.toString(getTagID(parentName)), TagsTable.tagParentID.type()},
+                {TagsTable.tagDesc.name(), description, TagsTable.tagDesc.type()}
             };
 
         // Add the document to the db
@@ -188,14 +181,6 @@ public class Archive {
         db.addTable(name, new Column[] {TagColumns.mainID});
 
         updateTagsFromDB();
-    }
-
-    public void addTag(String name){
-        addTag(name, "root");
-    }
-
-    public void addTag(String name, String parentName){
-        addTag(null, name, parentName);
     }
 
     /**

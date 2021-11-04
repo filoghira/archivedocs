@@ -22,7 +22,7 @@
                      <items>
                        <MenuItem mnemonicParsing="false" onAction="#logout" text="Logout" />
                            <MenuItem mnemonicParsing="false" onAction="#addDocument" text="Add document" />
-                           <MenuItem mnemonicParsing="false" text="Add tag" />
+                           <MenuItem mnemonicParsing="false" onAction="#addTag" text="Add tag" />
                      </items>
                    </Menu>
                  </menus>

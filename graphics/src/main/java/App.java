@@ -16,6 +16,7 @@ public class App extends Application {
     private BorderPane rootLayout;
     private MainController mainController;
     private AddDocumentController addDocumentController;
+    private AddTagController addTagController;
     private Archive archive;
 
     public App(){}
@@ -30,6 +31,9 @@ public class App extends Application {
         addDocumentController = new AddDocumentController();
         addDocumentController.setArchive(archive);
 
+        addTagController = new AddTagController();
+        addTagController.setArchive(archive);
+
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Archive");
         this.primaryStage.getIcons().add(new Image("icon.png"));
@@ -37,6 +41,7 @@ public class App extends Application {
         initRootLayout();
         mainController.setMainApp(this);
         addDocumentController.setMainApp(this);
+        addTagController.setMainApp(this);
 
         showFileOverview();
     }
@@ -86,6 +91,20 @@ public class App extends Application {
 
             // Set person overview into the center of root layout.
             rootLayout.setCenter(addDocumentOverview);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showAddTag(){
+        try {
+            // Load person overview.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(App.class.getResource("AddTag.fxml"));
+            AnchorPane addTagOverview = loader.load();
+
+            // Set person overview into the center of root layout.
+            rootLayout.setCenter(addTagOverview);
         } catch (IOException e) {
             e.printStackTrace();
         }

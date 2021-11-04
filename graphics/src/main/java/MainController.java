@@ -21,10 +21,10 @@ public class MainController implements Initializable
     @FXML private TableColumn<Document, Path> path;
 
     private static Archive archive;
-    private static App appApp;
+    private static App app;
 
     public void setMainApp(App appApp){
-        MainController.appApp = appApp;
+        MainController.app = appApp;
     }
 
     @Override
@@ -68,10 +68,12 @@ public class MainController implements Initializable
 
     @FXML
     private void addDocument(){
-        appApp.showAddDocument();
+        app.showAddDocument();
     }
 
     @FXML
-    private void addTag(){}
+    private void addTag(){
+        app.showAddTag();
+    }
 
 }

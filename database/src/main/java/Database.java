@@ -42,7 +42,7 @@ public class Database {
 
             // Checks if main table exists. If it doesn't it creates it
             addTable(mainTable, new Column[] {DocumentsTable.fileName, DocumentsTable.filePath, DocumentsTable.fileHash, DocumentsTable.fileDesc});
-            addTable(tagsTable, new Column[] {TagsTable.tagName, TagsTable.tagParentID});
+            addTable(tagsTable, new Column[] {TagsTable.tagName, TagsTable.tagParentID, TagsTable.tagDesc});
 
         } catch (SQLException e) {
             SQLUtils.printSQLException(e);
