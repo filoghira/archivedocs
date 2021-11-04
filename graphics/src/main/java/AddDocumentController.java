@@ -47,8 +47,9 @@ public class AddDocumentController implements Initializable {
             try {
                 // TODO: 01/11/2021 Implementare la gestione delle impostazioni del programma
                 if(archive.documentExists(General.checksum(selectedFile.getPath(), "SHA-512")))
-                    error.setText("Il documento \u00e8 già presente in archivio");
+                    error.setText("Il documento \u00e8 gi\u00e0 presente in archivio");
                 else{
+                    error.setText("");
                     this.selectedFile = selectedFile;
                     docName.setText(selectedFile.getName().substring(0, selectedFile.getName().lastIndexOf(".")));
                     docPath.setText(selectedFile.getPath());
@@ -72,7 +73,7 @@ public class AddDocumentController implements Initializable {
         } catch (FileNotFoundException e) {
             error.setText("Il documento \u00e8 stato rimosso dalla cartella d'origine");
         } catch (FileAlreadyInArchiveException e) {
-            error.setText("Il documento gi\u00e0 presente in archivio");
+            error.setText("Il documento \u00e8 gi\u00e0 presente in archivio");
         }
     }
 
