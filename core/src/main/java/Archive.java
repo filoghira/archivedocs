@@ -146,6 +146,9 @@ public class Archive {
         if(parentName == null)
             parentName = "root";
 
+        // Replace spaces with underscores
+        name = name.replace(" ", "_");
+
         // If the tag already exists or if the parent tag doesn't
         if(tagTree.nodeExists(name) || !tagTree.nodeExists(parentName))
             return;

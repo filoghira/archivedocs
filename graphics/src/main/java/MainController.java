@@ -46,10 +46,10 @@ public class MainController implements Initializable
         List<Node> children = tags.getChildren();
         // If it's the last item just add it
         if(children.isEmpty())
-            rootItem.getChildren().add(new TreeItem<>(tags.getData().getName()));
+            rootItem.getChildren().add(new TreeItem<>(tags.getData().getName().replace("_", " ")));
         else{
             // Otherwise, add each child to the root
-            TreeItem<String> son = new TreeItem<>(tags.getData().getName());
+            TreeItem<String> son = new TreeItem<>(tags.getData().getName().replace("_", " "));
             for (Node n : children)
                 addNodes(son, n);
             rootItem.getChildren().add(son);
