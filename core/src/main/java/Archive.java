@@ -275,8 +275,9 @@ public class Archive {
     }
 
     public void init(){
-        updateTagsFromDB();
         updateDocumentsFromDB();
+        updateTagsFromDB();
+
     }
 
     public List<Document> getDocuments(){
