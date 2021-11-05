@@ -84,12 +84,11 @@ public class AddDocumentController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // If the combobox has been initialized
-        if(tagsComboBox!=null)
-            initTagsComboBox();
+        initTagsComboBox();
     }
 
     void initTagsComboBox(){
+        //noinspection DuplicatedCode
         List<Node> tags = archive.getTagTree().getLeaves();
         if(tags.size() <= 1)
             return;

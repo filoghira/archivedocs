@@ -1,8 +1,11 @@
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class AddTagController implements Initializable {
@@ -15,11 +18,12 @@ public class AddTagController implements Initializable {
 
     private static App appApp;
     private static Archive archive;
+    private String parent;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        if(tagTree!=null)
-            update();
+        initTagsComboBox();
+        update();
     }
 
     public void setTagTree(Node tags){
@@ -60,5 +64,20 @@ public class AddTagController implements Initializable {
 
     void update(){
         setTagTree(archive.getTagTree());
+    }
+
+    void initTagsComboBox(){
+        //noinspection DuplicatedCode
+        List<Node> tags = archive.getTagTree().getLeaves();
+        if(tags.size() <= 1)
+            return;
+        // Get the tags that are leaves and convert them to string
+        ObservableList<String> items = FXCollections.observableArrayList();
+        for(Node n : tags)
+            items.add(n.getTagName());
+        // Add them to the combobox
+        tagsComboBox.getItems().addAll(items);
+
+        tagsComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> parent = newValue);
     }
 }
