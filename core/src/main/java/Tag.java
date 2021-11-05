@@ -3,19 +3,16 @@ import java.util.List;
 
 public class Tag {
 
-    private List<Document> documents = new ArrayList<>();
+    private List<Document> documents;
     private String name;
+    private String description;
     private int ID;
 
-    public Tag(int ID, List<Document> documents, String name){
+    public Tag(int ID, List<Document> documents, String name, String description){
         this.ID = ID;
         this.name = name;
         this.documents = documents;
-    }
-
-    public Tag(int ID, String name){
-        this.ID = ID;
-        this.name = name;
+        this.description = description;
     }
 
     public void setID(int ID){

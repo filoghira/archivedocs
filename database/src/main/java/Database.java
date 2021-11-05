@@ -13,7 +13,7 @@ public class Database {
     private final String dbName;
     private Connection connection = null;
 
-    public static final String mainTable = "document", tagsTable = "tag";
+    public static final String mainTable = "document";
     static final String INT = "INT";
     public static final String defaultFolder = "\\archivedocs";
 
@@ -42,7 +42,7 @@ public class Database {
 
             // Checks if main table exists. If it doesn't it creates it
             addTable(mainTable, new Column[] {DocumentsTable.fileName, DocumentsTable.filePath, DocumentsTable.fileHash, DocumentsTable.fileDesc});
-            addTable(tagsTable, new Column[] {TagsTable.tagName, TagsTable.tagParentID, TagsTable.tagDesc});
+            addTable(TagsTable.name, TagsTable.getColumns());
 
         } catch (SQLException e) {
             SQLUtils.printSQLException(e);

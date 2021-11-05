@@ -23,7 +23,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage){
-        archive = new Archive("test");
+        archive = new Archive("test", "");
 
         mainController = new MainController();
         mainController.setArchive(archive);

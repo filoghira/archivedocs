@@ -21,11 +21,6 @@ public class Archive {
         init();
     }
 
-    public Archive(String username){
-        db = new Database(username, "");
-        init();
-    }
-
     /**
      * Add a new Document to the archive
      * @param tags A list of the tags that are added to the document
@@ -156,7 +151,7 @@ public class Archive {
             return;
 
         // Create the tag
-        Tag tag = new Tag(-2, documents, name);
+        Tag tag = new Tag(-2, documents, name, description);
 
         // Add each document to the tag's own document list
         if(documents != null) {
@@ -167,15 +162,8 @@ public class Archive {
             }
         }
 
-        // Create the data array to be given to the SQL query
-        String[][] data = {
-                {TagsTable.tagName.name(), name, TagsTable.tagName.type()},
-                {TagsTable.tagParentID.name(), Integer.toString(getTagID(parentName)), TagsTable.tagParentID.type()},
-                {TagsTable.tagDesc.name(), description, TagsTable.tagDesc.type()}
-            };
-
         // Add the document to the db
-        tag.setID(db.addRow(Database.tagsTable, data));
+        tag.setID(db.addRow(TagsTable.name, TagsTable.getData(name, Integer.toString(getTagID(parentName)), description)));
 
         // Create the table of the tag
         db.addTable(name, new Column[] {TagColumns.mainID});
@@ -229,7 +217,7 @@ public class Archive {
     void updateTagsFromDB(){
 
         // Get the table data
-        ResultSet rs = db.getAllFromTable(Database.tagsTable);
+        ResultSet rs = db.getAllFromTable(TagsTable.name);
 
         try {
 
@@ -242,7 +230,8 @@ public class Archive {
                     pendingTags.add(new String[]{
                             String.valueOf(rs.getInt("ID")),
                             rs.getString(TagsTable.tagName.name()),
-                            String.valueOf(rs.getInt(TagsTable.tagParentID.name()))
+                            String.valueOf(rs.getInt(TagsTable.tagParentID.name())),
+                            rs.getString(TagsTable.tagDesc.name())
                     });
 
             // Convert raw data in a list of tags
@@ -252,23 +241,23 @@ public class Archive {
                     int ID = Integer.parseInt(rawTag[0]);
                     int parentID = Integer.parseInt(rawTag[2]);
 
+                    Tag tag = new Tag(ID, null, rawTag[1], rawTag[3]);
+
                     // If the tag has root as parent
                     if(parentID == 0) {
-                        tagTree.addChild(new Node(new Tag(ID, rawTag[1])));
+                        tagTree.addChild(new Node(tag));
                         iter.remove();
                     }else if(tagTree.nodeExists(Integer.parseInt(rawTag[2]))){    // If the tag parent has already been created
-                        tagTree.getNode(Integer.parseInt(rawTag[2])).addChild(new Node(new Tag(ID, rawTag[1])));
+                        tagTree.getNode(Integer.parseInt(rawTag[2])).addChild(new Node(tag));
                         iter.remove();
                     }
-
-                    Tag current = tagTree.getNode(rawTag[1]).getData();
 
                     // For each tag add its documents
                     ResultSet documents = db.getAllFromTable(rawTag[1]);
                     if(documents != null){
                         while(documents.next()) {
-                            current.addDocument(getDocument(documents.getInt(1)));
-                            current.addDocumentToParent(getDocument(documents.getInt(1)));
+                            tag.addDocument(getDocument(documents.getInt(1)));
+                            tag.addDocumentToParent(getDocument(documents.getInt(1)));
                         }
                     }
                 }
