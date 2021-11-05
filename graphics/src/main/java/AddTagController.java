@@ -1,15 +1,13 @@
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AddTagController implements Initializable {
 
+    @FXML private TreeView<String> tagTree;
     @FXML private ComboBox<String> tagsComboBox;
     @FXML private TextField tagName;
     @FXML private TextArea tagDesc;
@@ -20,15 +18,24 @@ public class AddTagController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        if(tagTree!=null)
+            update();
+    }
 
+    public void setTagTree(Node tags){
+        TreeItem<String> rootItem = new TreeItem<>("Tags");
+        if(tags.getChildren()!=null)
+            for (Node n:tags.getChildren())
+                MainController.addNodes(rootItem, n);
+        tagTree.setRoot(rootItem);
     }
 
     public void setArchive(Archive archive){
-        this.archive = archive;
+        AddTagController.archive = archive;
     }
 
     public void setMainApp(App appApp){
-        this.appApp = appApp;
+        AddTagController.appApp = appApp;
     }
 
     @FXML
@@ -43,10 +50,15 @@ public class AddTagController implements Initializable {
         else
             archive.addTag(null, name, parent, tagDesc.getText());
 
+        update();
     }
 
     @FXML
     private void goBack(){
         appApp.showFileOverview();
+    }
+
+    void update(){
+        setTagTree(archive.getTagTree());
     }
 }

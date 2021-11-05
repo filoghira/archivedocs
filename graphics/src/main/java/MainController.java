@@ -42,7 +42,7 @@ public class MainController implements Initializable
     }
 
     // Recursively creates a TreeItem for each tag and adds it to its root
-    void addNodes(TreeItem<String> rootItem, Node tags){
+    public static void addNodes(TreeItem<String> rootItem, Node tags){
         List<Node> children = tags.getChildren();
         // If it's the last item just add it
         if(children.isEmpty())
