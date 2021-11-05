@@ -12,7 +12,7 @@ import java.util.List;
 public class Archive {
 
     private List<Document> documents;
-    private final Node tagTree = new Node(null);
+    private Node tagTree = new Node(null);
     private Database db;
     private static final String documentsStorage = "\\docs";
 
@@ -215,6 +215,9 @@ public class Archive {
      * Gets all the tags from the tags Derby database and updates the tag tree
      */
     void updateTagsFromDB(){
+
+        // Empty the tag tree
+        tagTree = new Node(null);
 
         // Get the table data
         ResultSet rs = db.getAllFromTable(TagsTable.name);
