@@ -44,7 +44,6 @@ public class AddTagController implements Initializable {
 
     @FXML
     private void add(){
-        String parent = tagsComboBox.getValue();
         String name = tagName.getText();
 
         if(parent!=null && !archive.getTagTree().nodeExists(parent))
@@ -71,6 +70,7 @@ public class AddTagController implements Initializable {
 
     void update(){
         setTagTree(archive.getTagTree());
+        initTagsComboBox();
     }
 
     void initTagsComboBox(){

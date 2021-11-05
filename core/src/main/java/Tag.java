@@ -29,7 +29,7 @@ public class Tag {
      * @return False if the document has already the tag, otherwise returns true.
      */
     boolean addDocument(Document document){
-        if(documents.contains(document))
+        if(documents==null || documents.contains(document))
             return false;
         documents.add(document);
         return true;
@@ -40,6 +40,8 @@ public class Tag {
     }
 
     public boolean contains(Document document){
+        if (documents == null)
+            return false;
         return documents.contains(document);
     }
 
