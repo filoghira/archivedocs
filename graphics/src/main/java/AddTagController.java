@@ -54,7 +54,14 @@ public class AddTagController implements Initializable {
         else
             archive.addTag(null, name, parent, tagDesc.getText());
 
+        clear();
         update();
+    }
+
+    private void clear(){
+        tagName.clear();
+        tagDesc.clear();
+        tagsComboBox.setValue(null);
     }
 
     @FXML
