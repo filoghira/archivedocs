@@ -67,4 +67,8 @@ public class Document {
         return hash.equals(this.hash);
     }
 
+    public boolean contains(Tag tag){
+        return tags.contains(tag);
+    }
+
 }

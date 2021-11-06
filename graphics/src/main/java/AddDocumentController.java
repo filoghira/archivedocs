@@ -90,7 +90,7 @@ public class AddDocumentController implements Initializable {
     void initTagsComboBox(){
         //noinspection DuplicatedCode
         List<Node> tags = archive.getTagTree().getLeaves();
-        if(tags.size() <= 1)
+        if(tags.size() < 1)
             return;
         // Get the tags that are leaves and convert them to string
         ObservableList<String> items = FXCollections.observableArrayList();

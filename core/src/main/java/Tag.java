@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class Tag {
@@ -13,6 +14,8 @@ public class Tag {
         this.name = name;
         this.documents = documents;
         this.description = description;
+        if(documents==null)
+            this.documents = new ArrayList<>();
     }
 
     public void setID(int ID){
@@ -29,7 +32,7 @@ public class Tag {
      * @return False if the document has already the tag, otherwise returns true.
      */
     boolean addDocument(Document document){
-        if(documents==null || documents.contains(document))
+        if(document==null || documents.contains(document))
             return false;
         documents.add(document);
         return true;

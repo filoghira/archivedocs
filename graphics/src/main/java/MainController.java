@@ -94,12 +94,11 @@ public class MainController implements Initializable
     }
 
     private void updateDocumentTable(Tag tag){
+        fileTable.getItems().clear();
         List<Document> documents = tag == null ? archive.getDocuments() : tag.getDocuments();
         if(documents!=null)
             for (Document d:documents)
                 fileTable.getItems().add(d);
-        else
-            fileTable.getItems().clear();
     }
 
 }
