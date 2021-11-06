@@ -82,16 +82,24 @@ public class MainController implements Initializable
         app.showAddTag();
     }
 
-    void init(){
-        setTagTree(archive.getTagTree());
-        updateDocumentTable();
+    @FXML
+    private void select(){
+        String tagName = tagTree.getSelectionModel().getSelectedItem().getValue();
+        updateDocumentTable(archive.getTagTree().getNode(tagName).getData());
     }
 
-    private void updateDocumentTable(){
-        List<Document> documents = archive.getDocuments();
-        for (Document d:documents){
-            fileTable.getItems().add(d);
-        }
+    void init(){
+        setTagTree(archive.getTagTree());
+        updateDocumentTable(null);
+    }
+
+    private void updateDocumentTable(Tag tag){
+        List<Document> documents = tag == null ? archive.getDocuments() : tag.getDocuments();
+        if(documents!=null)
+            for (Document d:documents)
+                fileTable.getItems().add(d);
+        else
+            fileTable.getItems().clear();
     }
 
 }

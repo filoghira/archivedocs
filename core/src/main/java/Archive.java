@@ -154,6 +154,8 @@ public class Archive {
         db.addTable(name, new Column[] {TagColumns.mainID});
 
         updateTagsFromDB();
+
+        tag.setNode(tagTree.getNode(tag.getName()));
     }
 
     /**
@@ -235,7 +237,9 @@ public class Archive {
 
                     // If the tag has root as parent
                     if(parentID == 0) {
-                        tagTree.addChild(new Node(tag));
+                        Node n = new Node(tag);
+                        tag.setNode(n);
+                        tagTree.addChild(n);
                         iter.remove();
                     }else if(tagTree.nodeExists(Integer.parseInt(rawTag[2]))){    // If the tag parent has already been created
                         tagTree.getNode(Integer.parseInt(rawTag[2])).addChild(new Node(tag));
@@ -245,10 +249,8 @@ public class Archive {
                     // For each tag add its documents
                     ResultSet documents = db.getAllFromTable(rawTag[1]);
                     if(documents != null){
-                        while(documents.next()) {
+                        while(documents.next())
                             tag.addDocument(getDocument(documents.getInt(1)));
-                            tag.addDocumentToParent(getDocument(documents.getInt(1)));
-                        }
                     }
                 }
 

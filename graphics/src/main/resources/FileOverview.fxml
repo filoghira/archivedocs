@@ -46,7 +46,7 @@
                            </AnchorPane>
                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="295.0" prefWidth="174.0">
                               <children>
-                                    <TreeView fx:id="tagTree" prefHeight="353.0" prefWidth="174.0" showRoot="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    <TreeView fx:id="tagTree" onMouseClicked="#select" prefHeight="353.0" prefWidth="174.0" showRoot="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                               </children>
                            </AnchorPane>
                        </items>

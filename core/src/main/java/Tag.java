@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.List;
 
 public class Tag {
@@ -7,6 +6,7 @@ public class Tag {
     private String name;
     private String description;
     private int ID;
+    private Node node;
 
     public Tag(int ID, List<Document> documents, String name, String description){
         this.ID = ID;
@@ -45,7 +45,16 @@ public class Tag {
         return documents.contains(document);
     }
 
-    public void addDocumentToParent(Document document) {
-        //if(parent != null)
+    public List<Document> getDocuments(){
+        List<Document> documents = this.documents;
+        for (Node n: node.getChildren()) {
+            Tag t = n.getData();
+            documents.addAll(t.getDocuments());
+        }
+        return documents;
+    }
+
+    public void setNode(Node node) {
+        this.node = node;
     }
 }
