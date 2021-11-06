@@ -56,11 +56,10 @@
                      <children>
                         <TableView fx:id="fileTable" prefHeight="398.4" prefWidth="417.6" stylesheets="@FileOverview.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <columns>
-                              <TableColumn editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                              <TableColumn fx:id="icon" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
                               <TableColumn fx:id="name" editable="false" minWidth="50.0" prefWidth="75.0" text="Name" />
-                              <TableColumn fx:id="date" editable="false" minWidth="50.0" prefWidth="75.0" text="Date" />
+                              <TableColumn fx:id="lastDate" editable="false" minWidth="50.0" prefWidth="75.0" text="Last edit" />
                               <TableColumn fx:id="size" editable="false" minWidth="50.0" prefWidth="75.0" text="Size" />
-                              <TableColumn fx:id="path" editable="false" minWidth="50.0" prefWidth="75.0" sortable="false" text="Path" />
                            </columns>
                         </TableView>
                      </children>

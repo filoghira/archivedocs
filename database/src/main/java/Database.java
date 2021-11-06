@@ -14,7 +14,6 @@ public class Database {
     private Connection connection = null;
 
     public static final String mainTable = "document";
-    static final String INT = "INT";
     public static final String defaultFolder = "\\archivedocs";
 
     public Database(String userName, String password)
@@ -41,7 +40,7 @@ public class Database {
                     + ";password=" + password);
 
             // Checks if main table exists. If it doesn't it creates it
-            addTable(mainTable, new Column[] {DocumentsTable.fileName, DocumentsTable.filePath, DocumentsTable.fileHash, DocumentsTable.fileDesc});
+            addTable(mainTable, DocumentsTable.getColumns());
             addTable(TagsTable.name, TagsTable.getColumns());
 
         } catch (SQLException e) {
@@ -112,12 +111,12 @@ public class Database {
 
             String val;
 
-            if(values[i][2].equals(INT))
+            if(values[i][2].contains("INT"))
                 val = values[i][1];
             else
                 val = General.quote(values[i][1]);
 
-            // Build two separated strings, one for the columns and the other for the values
+            // Build two different strings, one for the columns and the other for the values
             query.append(values[i][0]);
             partialQuery.append(val);
 
