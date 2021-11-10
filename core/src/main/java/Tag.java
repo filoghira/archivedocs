@@ -7,12 +7,15 @@ public class Tag {
     private String name;
     private String description;
     private int ID;
+    private Node node;
 
     public Tag(int ID, List<Document> documents, String name, String description){
         this.ID = ID;
         this.name = name;
         this.documents = documents;
         this.description = description;
+        if(documents==null)
+            this.documents = new ArrayList<>();
     }
 
     public void setID(int ID){
@@ -29,7 +32,7 @@ public class Tag {
      * @return False if the document has already the tag, otherwise returns true.
      */
     boolean addDocument(Document document){
-        if(documents==null || documents.contains(document))
+        if(document==null || documents.contains(document))
             return false;
         documents.add(document);
         return true;
@@ -45,7 +48,16 @@ public class Tag {
         return documents.contains(document);
     }
 
-    public void addDocumentToParent(Document document) {
-        //if(parent != null)
+    public List<Document> getDocuments(){
+        List<Document> documents = new ArrayList<>(this.documents);
+        for (Node n: node.getChildren()) {
+            Tag t = n.getData();
+            documents.addAll(t.getDocuments());
+        }
+        return documents;
+    }
+
+    public void setNode(Node node) {
+        this.node = node;
     }
 }

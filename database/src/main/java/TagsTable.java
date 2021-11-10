@@ -1,7 +1,7 @@
 public class TagsTable{
     public static String name = "tag";
     public static Column tagName = new Column("tagName", "VARCHAR(100)");
-    public static Column tagParentID = new Column("tagParentID", Database.INT);
+    public static Column tagParentID = new Column("tagParentID", "INT");
     public static Column tagDesc = new Column("tagDesc", "CLOB");
 
     public static String[][] getData(String name, String id, String description){

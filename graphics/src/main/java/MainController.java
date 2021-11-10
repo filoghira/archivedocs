@@ -5,10 +5,11 @@ import javafx.scene.control.TreeView;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.nio.file.Path;
-import java.util.Date;
+
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 
 public class MainController implements Initializable
 {
@@ -16,9 +17,9 @@ public class MainController implements Initializable
     @FXML private TreeView<String> tagTree;
     @FXML private TableView<Document> fileTable;
     @FXML private TableColumn<Document, String> name;
-    @FXML private TableColumn<Document, Date> date;
-    @FXML private TableColumn<Document, Integer> size;
-    @FXML private TableColumn<Document, Path> path;
+    @FXML private TableColumn<Document, String> lastDate;
+    @FXML private TableColumn<Document, String> size;
+    @FXML private TableColumn<Document, Image> icon;
 
     private static Archive archive;
     private static App app;
@@ -29,8 +30,13 @@ public class MainController implements Initializable
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        if(tagTree!=null)
-            setTagTree(archive.getTagTree());
+        if(tagTree!=null){
+            name.setCellValueFactory(new PropertyValueFactory<>("name"));
+            lastDate.setCellValueFactory(new PropertyValueFactory<>("lastEdit"));
+            size.setCellValueFactory(new PropertyValueFactory<>("size"));
+            // icon.setCellValueFactory(new PropertyValueFactory<>("icon"));
+            init();
+        }
     }
 
     public void setTagTree(Node tags){
@@ -74,6 +80,29 @@ public class MainController implements Initializable
     @FXML
     private void addTag(){
         app.showAddTag();
+    }
+
+    @FXML
+    private void select(){
+        try {
+            String tagName = tagTree.getSelectionModel().getSelectedItem().getValue();
+            updateDocumentTable(archive.getTagTree().getNode(tagName).getData());
+        }catch (NullPointerException e){
+            System.out.println("No tag selected");
+        }
+    }
+
+    void init(){
+        setTagTree(archive.getTagTree());
+        updateDocumentTable(null);
+    }
+
+    public void updateDocumentTable(Tag tag){
+        fileTable.getItems().clear();
+        List<Document> documents = tag == null ? archive.getDocuments() : tag.getDocuments();
+        if(documents!=null)
+            for (Document d:documents)
+                fileTable.getItems().add(d);
     }
 
 }

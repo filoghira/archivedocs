@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -47,31 +48,10 @@ public class Archive {
             throw new FileAlreadyInArchiveException("The file named as "+name+" and located in "+path+" does not exist");
 
         // Create the document
-        Document document = new Document(-2, tags, name, path, hash, description);
+        Document document = new Document(-2, tags, name, path, hash, description, tempFile.length(), new Timestamp(tempFile.lastModified()));
 
         // Create the data array to be given to the SQL query
-        String[][] data = new String[][] {
-            {
-                DocumentsTable.fileName.name(),
-                name,
-                DocumentsTable.fileName.type()
-            },
-            {
-                DocumentsTable.filePath.name(),
-                path.toString(),
-                DocumentsTable.filePath.type()
-            },
-            {
-                DocumentsTable.fileHash.name(),
-                hash,
-                DocumentsTable.fileHash.type()
-            },
-            {
-                DocumentsTable.fileDesc.name(),
-                description,
-                DocumentsTable.fileDesc.type()
-            }
-        };
+        String[][] data = DocumentsTable.getData(name, String.valueOf(path), hash, description, tempFile.length(), new Timestamp(tempFile.lastModified()));
 
         // Add the document to the db
         int id = db.addRow(Database.mainTable, data);
@@ -101,6 +81,8 @@ public class Archive {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        documents.add(document);
     }
 
     public void removeDocument(Document document) {
@@ -172,6 +154,8 @@ public class Archive {
         db.addTable(name, new Column[] {TagColumns.mainID});
 
         updateTagsFromDB();
+
+        tag.setNode(tagTree.getNode(tag.getName()));
     }
 
     /**
@@ -194,8 +178,10 @@ public class Archive {
                     String filePath = rs.getString(3);
                     String hash = rs.getString(4);
                     String description = rs.getString(5);
+                    long size = rs.getLong(6);
+                    Timestamp date = rs.getTimestamp(7);
 
-                    documents.add(new Document(id, null, fileName, Paths.get(filePath), hash, description));
+                    documents.add(new Document(id, null, fileName, Paths.get(filePath), hash, description, size , date));
                 }
 
             // Update the document list
@@ -251,20 +237,24 @@ public class Archive {
 
                     // If the tag has root as parent
                     if(parentID == 0) {
-                        tagTree.addChild(new Node(tag));
+                        Node n = new Node(tag);
+                        tag.setNode(n);
+                        tagTree.addChild(n);
                         iter.remove();
                     }else if(tagTree.nodeExists(Integer.parseInt(rawTag[2]))){    // If the tag parent has already been created
-                        tagTree.getNode(Integer.parseInt(rawTag[2])).addChild(new Node(tag));
+                        Node parent = tagTree.getNode(Integer.parseInt(rawTag[2]));
+                        Node n = new Node(tag);
+                        tag.setNode(n);
+                        parent.addChild(new Node(tag));
+
                         iter.remove();
                     }
 
                     // For each tag add its documents
                     ResultSet documents = db.getAllFromTable(rawTag[1]);
                     if(documents != null){
-                        while(documents.next()) {
+                        while(documents.next())
                             tag.addDocument(getDocument(documents.getInt(1)));
-                            tag.addDocumentToParent(getDocument(documents.getInt(1)));
-                        }
                     }
                 }
 
