@@ -49,7 +49,7 @@ public class Tag {
     }
 
     public List<Document> getDocuments(){
-        List<Document> documents = this.documents;
+        List<Document> documents = new ArrayList<>(this.documents);
         for (Node n: node.getChildren()) {
             Tag t = n.getData();
             documents.addAll(t.getDocuments());
