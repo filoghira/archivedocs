@@ -7,7 +7,6 @@ public class DocumentsTable {
     public static Column fileDesc = new Column("fileDesc", "CLOB");
     public static Column fileSize = new Column("fileSize", "BIGINT");
     public static Column lastEdit = new Column("lastEdit", "TIMESTAMP");
-    // TODO: 06/11/2021 Implementare la gestione del tipo del file, rimuovendo quindi l'estensione quando il documento viene aggiunto
 
     public static String[][] getData(String name, String path, String hash, String description, long size, Timestamp date){
         return new String[][]{
