@@ -242,7 +242,11 @@ public class Archive {
                         tagTree.addChild(n);
                         iter.remove();
                     }else if(tagTree.nodeExists(Integer.parseInt(rawTag[2]))){    // If the tag parent has already been created
-                        tagTree.getNode(Integer.parseInt(rawTag[2])).addChild(new Node(tag));
+                        Node parent = tagTree.getNode(Integer.parseInt(rawTag[2]));
+                        Node n = new Node(tag);
+                        tag.setNode(n);
+                        parent.addChild(new Node(tag));
+
                         iter.remove();
                     }
 
