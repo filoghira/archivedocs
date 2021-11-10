@@ -20,3 +20,9 @@
 
 out/
 *.iml
+
+gradlew
+gradlew.bat
+derby.log
+.gradle
+build/
