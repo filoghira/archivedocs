@@ -2,6 +2,8 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -54,12 +56,7 @@ public class App extends Application {
             // Load root layout from fxml file.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(App.class.getResource("RootLayout.fxml"));
-            rootLayout = loader .load();
-
-            // Show the scene containing the root layout.
-            Scene scene = new Scene(rootLayout);
-            primaryStage.setScene(scene);
-            primaryStage.show();
+            rootLayout = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -75,8 +72,15 @@ public class App extends Application {
             loader.setLocation(App.class.getResource("FileOverview.fxml"));
             AnchorPane fileOverview = loader.load();
 
-            // Set person overview into the center of root layout.
-            rootLayout.setCenter(fileOverview);
+            Scene scene = new Scene(fileOverview);
+
+            scene.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+                if (event.getCode() == KeyCode.E)
+                    mainController.updateDocumentTable(null);
+            });
+
+            primaryStage.setScene(scene);
+            primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -89,8 +93,9 @@ public class App extends Application {
             loader.setLocation(App.class.getResource("AddDocument.fxml"));
             AnchorPane addDocumentOverview = loader.load();
 
-            // Set person overview into the center of root layout.
-            rootLayout.setCenter(addDocumentOverview);
+            Scene scene = new Scene(addDocumentOverview);
+            primaryStage.setScene(scene);
+            primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -103,8 +108,9 @@ public class App extends Application {
             loader.setLocation(App.class.getResource("AddTag.fxml"));
             AnchorPane addTagOverview = loader.load();
 
-            // Set person overview into the center of root layout.
-            rootLayout.setCenter(addTagOverview);
+            Scene scene = new Scene(addTagOverview);
+            primaryStage.setScene(scene);
+            primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }

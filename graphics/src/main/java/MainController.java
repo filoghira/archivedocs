@@ -84,8 +84,12 @@ public class MainController implements Initializable
 
     @FXML
     private void select(){
-        String tagName = tagTree.getSelectionModel().getSelectedItem().getValue();
-        updateDocumentTable(archive.getTagTree().getNode(tagName).getData());
+        try {
+            String tagName = tagTree.getSelectionModel().getSelectedItem().getValue();
+            updateDocumentTable(archive.getTagTree().getNode(tagName).getData());
+        }catch (NullPointerException e){
+            System.out.println("No tag selected");
+        }
     }
 
     void init(){
@@ -93,7 +97,7 @@ public class MainController implements Initializable
         updateDocumentTable(null);
     }
 
-    private void updateDocumentTable(Tag tag){
+    public void updateDocumentTable(Tag tag){
         fileTable.getItems().clear();
         List<Document> documents = tag == null ? archive.getDocuments() : tag.getDocuments();
         if(documents!=null)
