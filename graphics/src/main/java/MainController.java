@@ -27,7 +27,7 @@ public class MainController implements Initializable
     private static Archive archive;
     private static App app;
 
-    public void setMainApp(App appApp){
+    public static void setMainApp(App appApp){
         MainController.app = appApp;
     }
 
@@ -65,7 +65,7 @@ public class MainController implements Initializable
         }
     }
 
-    public void setArchive(Archive archive){
+    public static void setArchive(Archive archive){
         MainController.archive = archive;
     }
 

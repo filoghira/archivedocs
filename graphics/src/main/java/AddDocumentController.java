@@ -31,11 +31,11 @@ public class AddDocumentController implements Initializable {
     private File selectedFile;
     private ObservableList<String> selectedTags;
 
-    public void setArchive(Archive archive){
+    public static void setArchive(Archive archive){
         AddDocumentController.archive = archive;
     }
 
-    public void setMainApp(App appApp){
+    public static void setMainApp(App appApp){
         AddDocumentController.appApp = appApp;
     }
 

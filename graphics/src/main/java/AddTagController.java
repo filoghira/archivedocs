@@ -35,11 +35,11 @@ public class AddTagController implements Initializable {
         tagTree.setRoot(rootItem);
     }
 
-    public void setArchive(Archive archive){
+    public static void setArchive(Archive archive){
         AddTagController.archive = archive;
     }
 
-    public void setMainApp(App appApp){
+    public static void setMainApp(App appApp){
         AddTagController.appApp = appApp;
     }
 

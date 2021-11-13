@@ -16,7 +16,6 @@ import java.io.IOException;
 public class App extends Application {
 
     private Stage primaryStage;
-    private MainController mainController;
     private AddDocumentController addDocumentController;
     private AddTagController addTagController;
     private Archive archive;
@@ -27,22 +26,18 @@ public class App extends Application {
     public void start(Stage primaryStage){
         archive = new Archive("test", "");
 
-        mainController = new MainController();
-        mainController.setArchive(archive);
+        MainController.setArchive(archive);
+        MainController.setMainApp(this);
 
-        addDocumentController = new AddDocumentController();
-        addDocumentController.setArchive(archive);
+        AddDocumentController.setArchive(archive);
+        AddDocumentController.setMainApp(this);
 
-        addTagController = new AddTagController();
-        addTagController.setArchive(archive);
+        AddTagController.setArchive(archive);
+        AddTagController.setMainApp(this);
 
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Archive");
         this.primaryStage.getIcons().add(new Image("icon.png"));
-
-        mainController.setMainApp(this);
-        addDocumentController.setMainApp(this);
-        addTagController.setMainApp(this);
 
         try {
             showFileOverview();
