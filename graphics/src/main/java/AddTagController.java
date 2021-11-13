@@ -67,7 +67,7 @@ public class AddTagController implements Initializable {
     @FXML
     private void goBack(){
         try {
-            appApp.showFileOverview();
+            appApp.setFileOverviewScene();
         } catch (IOException e) {
             System.out.println("Problem while loading main scene");
         }

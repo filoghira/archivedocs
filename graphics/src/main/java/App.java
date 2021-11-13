@@ -1,12 +1,9 @@
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -16,8 +13,6 @@ import java.io.IOException;
 public class App extends Application {
 
     private Stage primaryStage;
-    private AddDocumentController addDocumentController;
-    private AddTagController addTagController;
     private Archive archive;
 
     public App(){}
@@ -40,7 +35,8 @@ public class App extends Application {
         this.primaryStage.getIcons().add(new Image("icon.png"));
 
         try {
-            showFileOverview();
+            setFileOverviewScene();
+            this.primaryStage.show();
         } catch (IOException e) {
             System.out.println("Problem while loading the main scene");
         }
@@ -49,7 +45,7 @@ public class App extends Application {
     /**
      * Shows the file overview inside the root layout.
      */
-    public void showFileOverview() throws IOException {
+    public void setFileOverviewScene() throws IOException {
         // Load main scene
         FXMLLoader loader = new FXMLLoader(App.class.getResource("FileOverview.fxml"));
         Scene scene = new Scene(loader.load());
@@ -57,29 +53,23 @@ public class App extends Application {
 
         // KeyEvent listener for ESC -> Remove tag selection
         scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.ESCAPE) {
-                MainController temp = loader.getController();
-                temp.resetSelection();
-            }
+            if (event.getCode() == KeyCode.ESCAPE)
+                ((MainController)loader.getController()).resetSelection();
         });
-
-        primaryStage.show();
     }
 
-    public void showAddDocument() throws IOException {
+    public void setAddDocumentScene() throws IOException {
         // Load AddDocument scene
         FXMLLoader loader = new FXMLLoader(App.class.getResource("AddDocument.fxml"));
         Scene scene = new Scene(loader.load());
         primaryStage.setScene(scene);
-        primaryStage.show();
     }
 
-    public void showAddTag() throws IOException {
+    public void setAddTagScene() throws IOException {
         // Load AddTag scene
         FXMLLoader loader = new FXMLLoader(App.class.getResource("AddTag.fxml"));
         Scene scene = new Scene(loader.load());
         primaryStage.setScene(scene);
-        primaryStage.show();
     }
 
     /**

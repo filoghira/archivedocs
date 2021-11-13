@@ -3,7 +3,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 
-import javafx.scene.input.KeyEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -78,7 +77,7 @@ public class MainController implements Initializable
     @FXML
     private void addDocument(){
         try {
-            app.showAddDocument();
+            app.setAddDocumentScene();
         } catch (IOException e) {
             System.out.println("Problem while loading the AddDocument scene");
         }
@@ -87,7 +86,7 @@ public class MainController implements Initializable
     @FXML
     private void addTag(){
         try {
-            app.showAddTag();
+            app.setAddTagScene();
         } catch (IOException e) {
             System.out.println("Problem while loading the AddTag scene");
         }
