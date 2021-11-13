@@ -1,4 +1,3 @@
-import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class Node {
         this.data = data;
     }
 
-    private void setParent(Node parent) {
+    void setParent(Node parent) {
         this.parent = parent;
     }
 
@@ -143,12 +142,18 @@ public class Node {
         return data==null ? null : data.getName();
     }
 
-    public void removeNode(String name) {
+    /**
+     * Delete the node from the tree
+     * @param name Name of the node to delete
+     * @return The documents that belong to the deleted node
+     */
+    public List<Document> removeNode(String name) {
         for (Node n : children)
             if (n.getTagName().equals(name)) {
                 children.remove(n);
-                return;
+                return  n.getData().getDocuments();
             }else
-                n.removeNode(name);
+                return n.removeNode(name);
+        return null;
     }
 }

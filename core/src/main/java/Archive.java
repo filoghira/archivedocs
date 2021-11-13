@@ -206,8 +206,15 @@ public class Archive {
         if(!tagTree.nodeExists(tag.getName()))
             return;
 
-        // Remove the tag from the archive
-        tagTree.removeNode(tag.getName());
+        // Remove the tag from the archive and retrieve the documents
+        Tag parent = tag.getNode().getParent().getData();
+        List<Document> documents = tagTree.removeNode(tag.getName());
+
+        // Add each document to the parent tag
+        for (Document document : documents) {
+            db.addRow(parent.getName(), TagColumns.getData(document.getID()));
+            parent.addDocument(document);
+        }
 
         // Remove the tag from the database
         db.deleteRow(TagsTable.name, tag.getID());
@@ -255,12 +262,14 @@ public class Archive {
                     // If the tag has root as parent
                     if(parentID == 0) {
                         Node n = new Node(tag);
+                        n.setParent(tagTree);
                         tag.setNode(n);
                         tagTree.addChild(n);
                         iter.remove();
                     }else if(tagTree.nodeExists(Integer.parseInt(rawTag[2]))){    // If the tag parent has already been created
                         Node parent = tagTree.getNode(Integer.parseInt(rawTag[2]));
                         Node n = new Node(tag);
+                        n.setParent(parent);
                         tag.setNode(n);
                         parent.addChild(new Node(tag));
                         iter.remove();
@@ -270,7 +279,7 @@ public class Archive {
                     ResultSet documents = db.getAllFromTable(rawTag[1]);
                     if(documents != null){
                         while(documents.next())
-                            tag.addDocument(getDocument(documents.getInt(1)));
+                            tag.addDocument(getDocument(documents.getInt(2)));
                     }
                 }
 

@@ -29,13 +29,11 @@ public class Tag {
     /**
      * Add a document to the tag
      * @param document The document to be added
-     * @return False if the document has already the tag, otherwise returns true.
      */
-    boolean addDocument(Document document){
+    void addDocument(Document document){
         if(document==null || documents.contains(document))
-            return false;
+            return;
         documents.add(document);
-        return true;
     }
 
     public String getName(){
@@ -59,5 +57,9 @@ public class Tag {
 
     public void setNode(Node node) {
         this.node = node;
+    }
+
+    public Node getNode(){
+        return node;
     }
 }

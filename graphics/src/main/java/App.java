@@ -18,7 +18,6 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage){
         archive = new Archive("test", "");
-        archive.removeTag(archive.getTagTree().getNode("tag1").getData());
 
         MainController.setArchive(archive);
         MainController.setMainApp(this);
