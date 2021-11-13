@@ -64,18 +64,22 @@ public class Node {
         }
     }
 
+    /**
+     * Check if a node exists within itself or its children
+     * @param id id of the node
+     * @return true if it exists, otherwise false
+     */
     public boolean nodeExists(int id){
-        if(data==null)
-            if(children==null)
+        boolean res = false;
+        if(data==null) {
+            if (children == null)
                 return false;
-            else {
-                boolean res = false;
-                for (Node t : children)
-                    res |= t.nodeExists(id);
-                return res;
-            }
-        else
-            return data.getID() == id;
+        }else
+            res = data.getID() == id;
+
+        for (Node t : children)
+            res |= t.nodeExists(id);
+        return res;
     }
 
     public Node getNode(String tagName){

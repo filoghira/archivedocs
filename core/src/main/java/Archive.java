@@ -266,7 +266,7 @@ public class Archive {
                         tag.setNode(n);
                         tagTree.addChild(n);
                         iter.remove();
-                    }else if(tagTree.nodeExists(Integer.parseInt(rawTag[2]))){    // If the tag parent has already been created
+                    }else if(tagTree.nodeExists(parentID)){    // If the tag parent has already been created
                         Node parent = tagTree.getNode(Integer.parseInt(rawTag[2]));
                         Node n = new Node(tag);
                         n.setParent(parent);
