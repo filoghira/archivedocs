@@ -15,23 +15,12 @@ public class Node {
         this.children.add(child);
     }
 
-    public void addChildren(List<Node> children) {
-        for(Node t : children) {
-            t.setParent(this);
-        }
-        this.children.addAll(children);
-    }
-
     public List<Node> getChildren() {
         return children;
     }
 
     public Tag getData() {
         return this.data;
-    }
-
-    public void setData(Tag data) {
-        this.data = data;
     }
 
     void setParent(Node parent) {
@@ -114,34 +103,6 @@ public class Node {
         return null;
     }
 
-    public void print(int depth){
-        if(data == null)
-            System.out.println("Root");
-        else {
-            for (int i = 0; i < depth; i++)
-                System.out.println("\t");
-            System.out.println(data.getName());
-        }
-
-        if(children!=null)
-            for(Node n : children)
-                n.print(depth+1);
-    }
-
-    /**
-     * Returns the leaves at the very end of the current node
-     * @return List of nodes
-     */
-    public List<Node> getLeaves() {
-        List<Node> out = new ArrayList<>();
-        if(children.isEmpty())
-            out.add(this);
-        else
-            for (Node n : children)
-                out.addAll(n.getLeaves());
-        return out;
-    }
-
     public String getTagName() {
         return data==null ? null : data.getName();
     }
@@ -159,5 +120,20 @@ public class Node {
             }else
                 return n.removeNode(name);
         return null;
+    }
+
+    /**
+     * Recursively gets all nodes under itself
+     * @return ArrayList of nodes
+     */
+    public List<Node> getNodes() {
+        List<Node> nodes = new ArrayList<>();
+        if(children != null) {
+            nodes.addAll(children);
+
+            for (Node n : children)
+                nodes.addAll(n.getNodes());
+        }
+        return nodes;
     }
 }

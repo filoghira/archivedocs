@@ -91,8 +91,11 @@ public class AddDocumentController implements Initializable {
     }
 
     void initTagsComboBox(){
+        // Clear
         //noinspection DuplicatedCode
-        List<Node> tags = archive.getTagTree().getLeaves();
+        tagsComboBox.getItems().clear();
+
+        List<Node> tags = archive.getTagTree().getNodes();
         if(tags.size() < 1)
             return;
         // Get the tags that are leaves and convert them to string

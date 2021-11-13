@@ -79,8 +79,11 @@ public class AddTagController implements Initializable {
     }
 
     void initTagsComboBox(){
+        // Clear
+        tagsComboBox.getItems().clear();
+
         //noinspection DuplicatedCode
-        List<Node> tags = archive.getTagTree().getLeaves();
+        List<Node> tags = archive.getTagTree().getNodes();
         if(tags.size() < 1)
             return;
         // Get the tags that are leaves and convert them to string
