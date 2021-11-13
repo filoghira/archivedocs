@@ -2,6 +2,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+
+import javafx.scene.input.KeyEvent;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -74,12 +77,20 @@ public class MainController implements Initializable
 
     @FXML
     private void addDocument(){
-        app.showAddDocument();
+        try {
+            app.showAddDocument();
+        } catch (IOException e) {
+            System.out.println("Problem while loading the AddDocument scene");
+        }
     }
 
     @FXML
     private void addTag(){
-        app.showAddTag();
+        try {
+            app.showAddTag();
+        } catch (IOException e) {
+            System.out.println("Problem while loading the AddTag scene");
+        }
     }
 
     @FXML
@@ -103,6 +114,11 @@ public class MainController implements Initializable
         if(documents!=null)
             for (Document d:documents)
                 fileTable.getItems().add(d);
+    }
+
+    public void resetSelection(){
+        tagTree.getSelectionModel().clearSelection();
+        updateDocumentTable(null);
     }
 
 }

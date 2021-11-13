@@ -1,4 +1,5 @@
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -15,7 +16,6 @@ import java.io.IOException;
 public class App extends Application {
 
     private Stage primaryStage;
-    private BorderPane rootLayout;
     private MainController mainController;
     private AddDocumentController addDocumentController;
     private AddTagController addTagController;
@@ -40,80 +40,51 @@ public class App extends Application {
         this.primaryStage.setTitle("Archive");
         this.primaryStage.getIcons().add(new Image("icon.png"));
 
-        initRootLayout();
         mainController.setMainApp(this);
         addDocumentController.setMainApp(this);
         addTagController.setMainApp(this);
 
-        showFileOverview();
-    }
-
-    /**
-     * Initialize root layout
-     */
-    public void initRootLayout() {
         try {
-            // Load root layout from fxml file.
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(App.class.getResource("RootLayout.fxml"));
-            rootLayout = loader.load();
+            showFileOverview();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Problem while loading the main scene");
         }
     }
 
     /**
      * Shows the file overview inside the root layout.
      */
-    public void showFileOverview() {
-        try {
-            // Load person overview.
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(App.class.getResource("FileOverview.fxml"));
-            AnchorPane fileOverview = loader.load();
+    public void showFileOverview() throws IOException {
+        // Load main scene
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("FileOverview.fxml"));
+        Scene scene = new Scene(loader.load());
+        primaryStage.setScene(scene);
 
-            Scene scene = new Scene(fileOverview);
+        // KeyEvent listener for ESC -> Remove tag selection
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ESCAPE) {
+                MainController temp = loader.getController();
+                temp.resetSelection();
+            }
+        });
 
-            scene.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-                if (event.getCode() == KeyCode.E)
-                    mainController.updateDocumentTable(null);
-            });
-
-            primaryStage.setScene(scene);
-            primaryStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        primaryStage.show();
     }
 
-    public void showAddDocument(){
-        try {
-            // Load person overview.
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(App.class.getResource("AddDocument.fxml"));
-            AnchorPane addDocumentOverview = loader.load();
-
-            Scene scene = new Scene(addDocumentOverview);
-            primaryStage.setScene(scene);
-            primaryStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void showAddDocument() throws IOException {
+        // Load AddDocument scene
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("AddDocument.fxml"));
+        Scene scene = new Scene(loader.load());
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
-    public void showAddTag(){
-        try {
-            // Load person overview.
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(App.class.getResource("AddTag.fxml"));
-            AnchorPane addTagOverview = loader.load();
-
-            Scene scene = new Scene(addTagOverview);
-            primaryStage.setScene(scene);
-            primaryStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void showAddTag() throws IOException {
+        // Load AddTag scene
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("AddTag.fxml"));
+        Scene scene = new Scene(loader.load());
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     /**

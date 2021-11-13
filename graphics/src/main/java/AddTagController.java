@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -65,7 +66,11 @@ public class AddTagController implements Initializable {
 
     @FXML
     private void goBack(){
-        appApp.showFileOverview();
+        try {
+            appApp.showFileOverview();
+        } catch (IOException e) {
+            System.out.println("Problem while loading main scene");
+        }
     }
 
     void update(){

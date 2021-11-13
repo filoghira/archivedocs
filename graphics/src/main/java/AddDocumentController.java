@@ -79,7 +79,11 @@ public class AddDocumentController implements Initializable {
 
     @FXML
     private void goBack(){
-        appApp.showFileOverview();
+        try {
+            appApp.showFileOverview();
+        } catch (IOException e) {
+            System.out.println("Problem while loading main scene");
+        }
     }
 
     @Override
