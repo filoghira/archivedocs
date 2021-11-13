@@ -8,8 +8,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-// TODO: 01/11/2021 Correggere il warning Unsupported JavaFX configuration: classes were loaded from 'unnamed module'
-
 public class App extends Application {
 
     private Stage primaryStage;
@@ -20,6 +18,7 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage){
         archive = new Archive("test", "");
+        archive.removeTag(archive.getTagTree().getNode("tag1").getData());
 
         MainController.setArchive(archive);
         MainController.setMainApp(this);

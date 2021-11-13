@@ -45,7 +45,6 @@ public class AddDocumentController implements Initializable {
         File selectedFile = fileChooser.showOpenDialog(appApp.getPrimaryStage());
         if(selectedFile!=null) {
             try {
-                // TODO: 01/11/2021 Implementare la gestione delle impostazioni del programma
                 if(archive.documentExists(General.checksum(selectedFile.getPath(), "SHA-512")))
                     error.setText("The document is already in archive");
                 else{

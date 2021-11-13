@@ -13,7 +13,6 @@ public class Database {
     private final String dbName;
     private Connection connection = null;
 
-    public static final String mainTable = "document";
     public static final String defaultFolder = "\\archivedocs";
 
     public Database(String userName, String password)
@@ -40,7 +39,7 @@ public class Database {
                     + ";password=" + password);
 
             // Checks if main table exists. If it doesn't it creates it
-            addTable(mainTable, DocumentsTable.getColumns());
+            addTable(DocumentsTable.name, DocumentsTable.getColumns());
             addTable(TagsTable.name, TagsTable.getColumns());
 
         } catch (SQLException e) {
@@ -89,6 +88,27 @@ public class Database {
             System.out.println("Executing query:\n" + query);
             statement.executeUpdate();
             statement.close();
+        } catch (SQLException e) {
+            SQLUtils.printSQLException(e);
+        }
+    }
+
+    /**
+     * Delete a table from the database
+     * @param name Name of the table
+     */
+    public void deleteTable(String name){
+        // Prepare the query
+        StringBuilder query = new StringBuilder("DROP TABLE " + name);
+
+        // Prepare the statement
+        PreparedStatement statement;
+
+        try {
+            // Execute the statement and get as result the ID of the item that has just been added
+            System.out.println("Executing query:\n" + query);
+            statement = connection.prepareStatement(query.toString(), PreparedStatement.RETURN_GENERATED_KEYS );
+            statement.executeUpdate();
         } catch (SQLException e) {
             SQLUtils.printSQLException(e);
         }

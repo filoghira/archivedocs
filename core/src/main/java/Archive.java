@@ -54,7 +54,7 @@ public class Archive {
         String[][] data = DocumentsTable.getData(name, String.valueOf(path), hash, description, tempFile.length(), new Timestamp(tempFile.lastModified()));
 
         // Add the document to the db
-        int id = db.addRow(Database.mainTable, data);
+        int id = db.addRow(DocumentsTable.name, data);
         document.setID(id);
 
         // Add the document ID (reference to the main table) to each table of each tag
@@ -85,14 +85,22 @@ public class Archive {
         documents.add(document);
     }
 
+    /**
+     * Remove a document from the archive
+     * @param document The document to be removed
+     */
     public void removeDocument(Document document) {
+        // Check if the document exists
         if(!documents.contains(document))
             return;
 
+        // Remove the document from the archive
         documents.remove(document);
 
-        db.deleteRow(Database.mainTable, document.getID());
+        // Remove the document from the database
+        db.deleteRow(DocumentsTable.name, document.getID());
 
+        // Remove the document from the file system
         File file = document.getPath().toFile();
 
         if(file.exists())
@@ -101,70 +109,12 @@ public class Archive {
     }
 
     /**
-     * Check if a document is already in the database
-     * @param hash Hash of the document to be searched
-     * @return True of it's already there, otherwise false
-     */
-    public boolean documentExists(String hash){
-        if(documents==null)
-            return false;
-        int i=0;
-        while(i < documents.size()){
-            if(documents.get(i).compareHash(hash))
-                return true;
-            i++;
-        }
-        return false;
-    }
-
-    /**
-     * Add a new tag to the archive
-     * @param documents The list of the documents that belongs to the new tag
-     * @param name Name of the tag
-     */
-    public void addTag(List<Document> documents, String name, String parentName, String description) {
-
-        // TODO: 04/11/2021 Gestire gli errori con le Exception
-        if(parentName == null)
-            parentName = "root";
-
-        // Replace spaces with underscores
-        name = name.replace(" ", "_");
-
-        // If the tag already exists or if the parent tag doesn't
-        if(tagTree.nodeExists(name) || !tagTree.nodeExists(parentName))
-            return;
-
-        // Create the tag
-        Tag tag = new Tag(-2, documents, name, description);
-
-        // Add each document to the tag's own document list
-        if(documents != null) {
-            int i = 0;
-            while (i < documents.size()) {
-                documents.get(i).addTag(tag);
-                i++;
-            }
-        }
-
-        // Add the document to the db
-        tag.setID(db.addRow(TagsTable.name, TagsTable.getData(name, Integer.toString(getTagID(parentName)), description)));
-
-        // Create the table of the tag
-        db.addTable(name, new Column[] {TagColumns.mainID});
-
-        updateTagsFromDB();
-
-        tag.setNode(tagTree.getNode(tag.getName()));
-    }
-
-    /**
      * Gets the document list from the Derby database and updates the current list
      */
     void updateDocumentsFromDB(){
 
         // SELECT every document from the main table in the database
-        ResultSet rs = db.getAllFromTable(Database.mainTable);
+        ResultSet rs = db.getAllFromTable(DocumentsTable.name);
 
         try {
 
@@ -193,11 +143,78 @@ public class Archive {
 
     }
 
-    int getTagID(String name){
-        if(name.equals("root"))
-            return 0;
-        Node n = tagTree.getNode(name);
-        return n.getData().getID();
+    /**
+     * Check if a document is already in the database
+     * @param hash Hash of the document to be searched
+     * @return True of it's already there, otherwise false
+     */
+    public boolean documentExists(String hash){
+        if(documents==null)
+            return false;
+        int i=0;
+        while(i < documents.size()){
+            if(documents.get(i).compareHash(hash))
+                return true;
+            i++;
+        }
+        return false;
+    }
+
+    /**
+     * Add a new tag to the archive
+     * @param documents The list of the documents that belongs to the new tag
+     * @param name Name of the tag
+     */
+    public void addTag(List<Document> documents, String name, String parentName, String description) {
+        if(parentName == null)
+            parentName = "root";
+
+        // Replace spaces with underscores
+        name = name.replace(" ", "_");
+
+        // If the tag already exists or if the parent tag doesn't
+        if(tagTree.nodeExists(name) || !tagTree.nodeExists(parentName))
+            return;
+
+        // Create the tag
+        Tag tag = new Tag(-2, documents, name, description);
+
+        // Add each document to the tag's own document list
+        if(documents != null) {
+            int i = 0;
+            while (i < documents.size()) {
+                documents.get(i).addTag(tag);
+                i++;
+            }
+        }
+
+        // Add the document to the db
+        tag.setID(db.addRow(TagsTable.name, TagsTable.getData(name, Integer.toString(getTagID(parentName)), description)));
+
+        // Create the table of the tag
+        db.addTable(name, new Column[] {TagColumns.mainID});
+
+        // Update the tag tree
+        updateTagsFromDB();
+
+        // Set the node
+        tag.setNode(tagTree.getNode(tag.getName()));
+    }
+
+    public void removeTag(Tag tag) {
+        // Check if the tag exists
+        if(!tagTree.nodeExists(tag.getName()))
+            return;
+
+        // Remove the tag from the archive
+        tagTree.removeNode(tag.getName());
+
+        // Remove the tag from the database
+        db.deleteRow(TagsTable.name, tag.getID());
+
+        // Delete the table of the tag
+        db.deleteTable(tag.getName());
+
     }
 
     /**
@@ -246,7 +263,6 @@ public class Archive {
                         Node n = new Node(tag);
                         tag.setNode(n);
                         parent.addChild(new Node(tag));
-
                         iter.remove();
                     }
 
@@ -267,24 +283,26 @@ public class Archive {
     public void init(){
         updateDocumentsFromDB();
         updateTagsFromDB();
-
     }
 
     public List<Document> getDocuments(){
         return documents;
     }
 
-    public void printTagTree(){
-        tagTree.print(0);
-    }
-
     public Node getTagTree(){
         return tagTree;
     }
 
-    public void logout(){
-        db.closeConnection();
-        db = null;
+    /**
+     * Given a tag name, returns the tag's ID
+     * @param name Name of the tag
+     * @return The tag's ID
+     */
+    int getTagID(String name){
+        if(name.equals("root"))
+            return 0;
+        Node n = tagTree.getNode(name);
+        return n.getData().getID();
     }
 
     /**
@@ -297,5 +315,10 @@ public class Archive {
             if(d.getID()==id)
                 return d;
         return null;
+    }
+
+    public void logout(){
+        db.closeConnection();
+        db = null;
     }
 }

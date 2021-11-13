@@ -1,3 +1,4 @@
+import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -140,5 +141,14 @@ public class Node {
 
     public String getTagName() {
         return data==null ? null : data.getName();
+    }
+
+    public void removeNode(String name) {
+        for (Node n : children)
+            if (n.getTagName().equals(name)) {
+                children.remove(n);
+                return;
+            }else
+                n.removeNode(name);
     }
 }
