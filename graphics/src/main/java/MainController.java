@@ -1,15 +1,12 @@
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 
@@ -22,9 +19,11 @@ public class MainController implements Initializable
     @FXML private TableColumn<Document, String> lastDate;
     @FXML private TableColumn<Document, String> size;
     @FXML private TableColumn<Document, Image> icon;
+    @FXML private ContextMenu fileContextMenu;
 
     private static Archive archive;
     private static App app;
+    private static Tag selectedTag;
 
     public static void setMainApp(App appApp){
         MainController.app = appApp;
@@ -96,10 +95,19 @@ public class MainController implements Initializable
     private void select(){
         try {
             String tagName = tagTree.getSelectionModel().getSelectedItem().getValue();
+            selectedTag = archive.getTagTree().getNode(tagName).getData();
             updateDocumentTable(archive.getTagTree().getNode(tagName).getData());
         }catch (NullPointerException e){
             System.out.println("No tag selected");
         }
+    }
+
+    @FXML
+    private void removeDocument(){
+        Document d = fileTable.getSelectionModel().getSelectedItem();
+        if(d!=null)
+            archive.removeDocument(d);
+        updateDocumentTable(selectedTag);
     }
 
     void init(){
@@ -117,6 +125,7 @@ public class MainController implements Initializable
 
     public void resetSelection(){
         tagTree.getSelectionModel().clearSelection();
+        selectedTag = null;
         updateDocumentTable(null);
     }
 
