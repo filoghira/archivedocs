@@ -19,7 +19,6 @@ public class MainController implements Initializable
     @FXML private TableColumn<Document, String> lastDate;
     @FXML private TableColumn<Document, String> size;
     @FXML private TableColumn<Document, Image> icon;
-    @FXML private ContextMenu fileContextMenu;
 
     private static Archive archive;
     private static App app;
@@ -108,6 +107,15 @@ public class MainController implements Initializable
         if(d!=null)
             archive.removeDocument(d);
         updateDocumentTable(selectedTag);
+    }
+
+    @FXML
+    private void removeTag(){
+        select();
+        if(selectedTag!=null)
+            archive.removeTag(selectedTag);
+        selectedTag = null;
+        init();
     }
 
     void init(){
