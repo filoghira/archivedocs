@@ -7,12 +7,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 public class Archive {
 
-    private List<Document> documents;
+    private HashMap<Integer, Document> documents;
     private Node tagTree = new Node(null);
     private Database db;
     private static final String documentsStorage = "\\docs";
@@ -82,7 +83,7 @@ public class Archive {
             e.printStackTrace();
         }
 
-        documents.add(document);
+        documents.put(id, document);
     }
 
     /**
@@ -91,7 +92,7 @@ public class Archive {
      */
     public void removeDocument(Document document) {
         // Check if the document exists
-        if(!documents.contains(document))
+        if(!documents.containsValue(document))
             return;
 
         // Remove the document from the archive
@@ -118,7 +119,7 @@ public class Archive {
 
         try {
 
-            List<Document> documents = new ArrayList<>();
+            HashMap<Integer, Document> documents = new HashMap<>();
 
             if(rs!=null)
                 // Go through result set and create documents
@@ -131,7 +132,7 @@ public class Archive {
                     long size = rs.getLong(6);
                     Timestamp date = rs.getTimestamp(7);
 
-                    documents.add(new Document(id, null, fileName, Paths.get(filePath), hash, description, size , date));
+                    documents.put(id, new Document(id, null, fileName, Paths.get(filePath), hash, description, size , date));
                 }
 
             // Update the document list
@@ -295,7 +296,7 @@ public class Archive {
     }
 
     public List<Document> getDocuments(){
-        return documents;
+        return new ArrayList<>(documents.values());
     }
 
     public Node getTagTree(){
@@ -320,10 +321,7 @@ public class Archive {
      * @return th document
      */
     public Document getDocument(int id){
-        for (Document d:documents)
-            if(d.getID()==id)
-                return d;
-        return null;
+        return documents.get(id);
     }
 
     public void logout(){
