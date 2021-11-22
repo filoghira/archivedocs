@@ -62,4 +62,16 @@ public class Tag {
     public Node getNode(){
         return node;
     }
+
+    public static List<Tag> getTags(List<String> tags){
+        List<Tag> result = new ArrayList<>();
+        for(String tag: tags){
+            result.add(new Tag(0, null, tag, ""));
+        }
+        return result;
+    }
+
+    void removeDocument(Document document) {
+        documents.remove(document);
+    }
 }

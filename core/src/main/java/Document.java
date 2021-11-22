@@ -1,12 +1,13 @@
 import java.nio.file.Path;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class Document {
 
-    private final List<Tag> tags;
+    private List<Tag> tags;
     private final String hash;
     private String name;
     private Path path;
@@ -14,16 +15,20 @@ public class Document {
     private long size;
     private String description;
     private int ID;
+    private Archive archive;
 
-    public Document(int ID, List<Tag> tags, String name, Path path, String hash, String description, long size, Timestamp lastEdit){
+    public Document(int ID, List<Tag> tags, String name, Path path, String hash, String description, long size, Timestamp lastEdit, Archive archive) {
         this.ID = ID;
         this.tags = tags;
+        if (tags == null)
+            this.tags = new ArrayList<>();
         this.name = name;
         this.path = path;
         this.hash = hash;
         this.description = description;
         this.size = size;
         this.lastEdit = lastEdit;
+        this.archive = archive;
     }
 
     /**
@@ -71,4 +76,30 @@ public class Document {
         return tags.contains(tag);
     }
 
+    public void setName(String text) {
+        name = text;
+    }
+
+    public void setDescription(String text) {
+        description = text;
+    }
+
+    public void setTags(List<String> tags) {
+        for (Tag tag : this.tags)
+            if(!tags.contains(tag.getName()))
+                tag.removeDocument(this);
+
+        this.tags.clear();
+        for (String tag : tags)
+            this.tags.add(archive.getTagTree().getNode(tag).getData());
+
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
 }

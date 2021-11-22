@@ -28,6 +28,8 @@ public class App extends Application {
         AddTagController.setArchive(archive);
         AddTagController.setMainApp(this);
 
+        EditDocumentController.init(null, this, archive);
+
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Archive");
         this.primaryStage.getIcons().add(new Image("icon.png"));
@@ -79,6 +81,13 @@ public class App extends Application {
 
     public static void main(String[] args) {
         Application.launch(args);
+    }
+
+    public void setEditDocumentScene(Document d) throws IOException {
+        EditDocumentController.init(d, this, archive);
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("EditDocument.fxml"));
+        Scene scene = new Scene(loader.load());
+        primaryStage.setScene(scene);
     }
 }
 

@@ -72,7 +72,8 @@
                            <contextMenu>
                               <ContextMenu fx:id="fileContextMenu">
                                 <items>
-                                  <MenuItem mnemonicParsing="false" onAction="#removeDocument" text="Delete" />
+                                    <MenuItem mnemonicParsing="false" onAction="#editDocument" text="Edit" />
+                                    <MenuItem mnemonicParsing="false" onAction="#removeDocument" text="Delete" />
                                 </items>
                               </ContextMenu>
                            </contextMenu>

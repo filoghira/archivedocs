@@ -26,7 +26,7 @@ public class AddDocumentController implements Initializable {
     @FXML private TextArea docDesc;
     @FXML private Label error;
 
-    private static App appApp;
+    private static App app;
     private static Archive archive;
     private File selectedFile;
     private ObservableList<String> selectedTags;
@@ -36,13 +36,13 @@ public class AddDocumentController implements Initializable {
     }
 
     public static void setMainApp(App appApp){
-        AddDocumentController.appApp = appApp;
+        AddDocumentController.app = appApp;
     }
 
     @FXML
     private void chooseFile() {
         FileChooser fileChooser = new FileChooser();
-        File selectedFile = fileChooser.showOpenDialog(appApp.getPrimaryStage());
+        File selectedFile = fileChooser.showOpenDialog(app.getPrimaryStage());
         if(selectedFile!=null) {
             try {
                 if(archive.documentExists(General.checksum(selectedFile.getPath(), "SHA-512")))
@@ -79,7 +79,7 @@ public class AddDocumentController implements Initializable {
     @FXML
     private void goBack(){
         try {
-            appApp.setFileOverviewScene();
+            app.setFileOverviewScene();
         } catch (IOException e) {
             System.out.println("Problem while loading main scene");
         }

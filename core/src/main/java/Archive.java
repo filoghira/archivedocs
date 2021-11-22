@@ -49,7 +49,16 @@ public class Archive {
             throw new FileAlreadyInArchiveException("The file named as "+name+" and located in "+path+" does not exist");
 
         // Create the document
-        Document document = new Document(-2, tags, name, path, hash, description, tempFile.length(), new Timestamp(tempFile.lastModified()));
+        Document document = new Document(
+                -2,
+                tags,
+                name,
+                path,
+                hash,
+                description,
+                tempFile.length(),
+                new Timestamp(tempFile.lastModified()),
+                this);
 
         // Create the data array to be given to the SQL query
         String[][] data = DocumentsTable.getData(name, String.valueOf(path), hash, description, tempFile.length(), new Timestamp(tempFile.lastModified()));
@@ -96,7 +105,7 @@ public class Archive {
             return;
 
         // Remove the document from the archive
-        documents.remove(document);
+        documents.remove(document.getID());
 
         // Remove the document from the database
         db.deleteRow(DocumentsTable.name, document.getID());
@@ -132,7 +141,16 @@ public class Archive {
                     long size = rs.getLong(6);
                     Timestamp date = rs.getTimestamp(7);
 
-                    documents.put(id, new Document(id, null, fileName, Paths.get(filePath), hash, description, size , date));
+                    documents.put(id, new Document(id,
+                            null,
+                            fileName,
+                            Paths.get(filePath),
+                            hash,
+                            description,
+                            size,
+                            date,
+                            this
+                    ));
                 }
 
             // Update the document list
@@ -279,8 +297,11 @@ public class Archive {
                     // For each tag add its documents
                     ResultSet documents = db.getAllFromTable(rawTag[1]);
                     if(documents != null){
-                        while(documents.next())
-                            tag.addDocument(getDocument(documents.getInt(2)));
+                        while(documents.next()) {
+                            Document d = getDocument(documents.getInt(2));
+                            tag.addDocument(d);
+                            d.addTag(tag);
+                        }
                     }
                 }
 
@@ -327,5 +348,11 @@ public class Archive {
     public void logout(){
         db.closeConnection();
         db = null;
+    }
+
+    void editDocument(Document d, String newName, String newDesc, List<String> newTags){
+        d.setName(newName);
+        d.setDescription(newDesc);
+        d.setTags(newTags);
     }
 }

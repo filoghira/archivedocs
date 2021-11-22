@@ -110,6 +110,18 @@ public class MainController implements Initializable
     }
 
     @FXML
+    private void editDocument(){
+        Document d = fileTable.getSelectionModel().getSelectedItem();
+        if(d!=null) {
+            try {
+                app.setEditDocumentScene(d);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @FXML
     private void removeTag(){
         select();
         if(selectedTag!=null)
