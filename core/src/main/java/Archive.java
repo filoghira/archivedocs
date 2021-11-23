@@ -72,8 +72,8 @@ public class Archive {
             int i=0;
             while ( i<tags.size()) {
                 if (!tags.get(i).contains(document)) {
-                    tags.get(i).addDocument(document);
-                    db.addRow(tags.get(i).getName(), new String[][]{{TagColumns.mainID.name(), Integer.toString(document.getID()), TagColumns.mainID.type()}});
+                    int new_id = db.addRow(tags.get(i).getName(), new String[][]{{TagColumns.mainID.name(), Integer.toString(document.getID()), TagColumns.mainID.type()}});
+                    tags.get(i).addDocument(new_id, document);
                 }
                 i++;
             }
@@ -181,10 +181,9 @@ public class Archive {
 
     /**
      * Add a new tag to the archive
-     * @param documents The list of the documents that belongs to the new tag
      * @param name Name of the tag
      */
-    public void addTag(List<Document> documents, String name, String parentName, String description) {
+    public void addTag(String name, String parentName, String description) {
         if(parentName == null)
             parentName = "root";
 
@@ -196,7 +195,7 @@ public class Archive {
             return;
 
         // Create the tag
-        Tag tag = new Tag(-2, documents, name, description);
+        Tag tag = new Tag(-2, name, description);
 
         // Add each document to the tag's own document list
         if(documents != null) {
@@ -220,6 +219,10 @@ public class Archive {
         tag.setNode(tagTree.getNode(tag.getName()));
     }
 
+    /**
+     * Remove a tag from the archive
+     * @param tag Tag to be removed
+     */
     public void removeTag(Tag tag) {
         // Check if the tag exists
         if(!tagTree.nodeExists(tag.getName()))
@@ -230,10 +233,8 @@ public class Archive {
         List<Document> documents = tagTree.removeNode(tag.getName());
 
         // Add each document to the parent tag
-        for (Document document : documents) {
-            db.addRow(parent.getName(), TagColumns.getData(document.getID()));
-            parent.addDocument(document);
-        }
+        for (Document document : documents)
+            parent.addDocument(document.getID(), document);
 
         // Remove the tag from the database
         db.deleteRow(TagsTable.name, tag.getID());
@@ -276,7 +277,7 @@ public class Archive {
                     int ID = Integer.parseInt(rawTag[0]);
                     int parentID = Integer.parseInt(rawTag[2]);
 
-                    Tag tag = new Tag(ID, null, rawTag[1], rawTag[3]);
+                    Tag tag = new Tag(ID, rawTag[1], rawTag[3]);
 
                     // If the tag has root as parent
                     if(parentID == 0) {
@@ -298,8 +299,11 @@ public class Archive {
                     ResultSet documents = db.getAllFromTable(rawTag[1]);
                     if(documents != null){
                         while(documents.next()) {
-                            Document d = getDocument(documents.getInt(2));
-                            tag.addDocument(d);
+                            int docID = documents.getInt("ID");
+                            Document d = getDocument(
+                                    documents.getInt(TagColumns.mainID.name())
+                            );
+                            tag.addDocument(docID, d);
                             d.addTag(tag);
                         }
                     }
@@ -350,9 +354,26 @@ public class Archive {
         db = null;
     }
 
+    /**
+     * Edit a document
+     * @param d The document to edit
+     * @param newName The new name of the document
+     * @param newDesc The new description of the document
+     * @param newTags The new tags of the document
+     */
     void editDocument(Document d, String newName, String newDesc, List<String> newTags){
+        // Update the name
         d.setName(newName);
+        // Update the description
         d.setDescription(newDesc);
-        d.setTags(newTags);
+        // Update the tags in the document
+        List<Tag> oldTags = d.setTags(newTags);
+
+        // Remove the old tags from the database
+        for (Tag tag : oldTags) {
+            int id = tag.getDocumentID(d);
+            db.deleteRow(tag.getName(), id);
+            tag.removeDocument(id);
+        }
     }
 }

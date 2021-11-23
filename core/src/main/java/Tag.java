@@ -1,21 +1,19 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Tag {
 
-    private List<Document> documents;
+    private HashMap<Integer, Document> documents = new HashMap<>();
     private String name;
     private String description;
     private int ID;
     private Node node;
 
-    public Tag(int ID, List<Document> documents, String name, String description){
+    public Tag(int ID, String name, String description){
         this.ID = ID;
         this.name = name;
-        this.documents = documents;
         this.description = description;
-        if(documents==null)
-            this.documents = new ArrayList<>();
     }
 
     public void setID(int ID){
@@ -30,10 +28,10 @@ public class Tag {
      * Add a document to the tag
      * @param document The document to be added
      */
-    void addDocument(Document document){
-        if(document==null || documents.contains(document))
+    void addDocument(int id, Document document){
+        if(document==null || documents.containsValue(document) || documents.containsKey(id))
             return;
-        documents.add(document);
+        documents.put(id, document);
     }
 
     public String getName(){
@@ -43,11 +41,19 @@ public class Tag {
     public boolean contains(Document document){
         if (documents == null)
             return false;
-        return documents.contains(document);
+        return documents.containsValue(document);
     }
 
+    public void setDocuments(HashMap<Integer, Document> documents) {
+        this.documents = documents;
+    }
+
+    /**
+     * Get the documents in the tag
+     * @return List of documents
+     */
     public List<Document> getDocuments(){
-        List<Document> documents = new ArrayList<>(this.documents);
+        List<Document> documents = new ArrayList<>(this.documents.values());
         for (Node n: node.getChildren()) {
             Tag t = n.getData();
             documents.addAll(t.getDocuments());
@@ -55,6 +61,22 @@ public class Tag {
         return documents;
     }
 
+    /**
+     * Get the id in the tag table (NOT the reference to the main table)
+     * @param document The document
+     * @return The id in the tag table
+     */
+    int getDocumentID(Document document) {
+        for (int id: documents.keySet())
+            if (documents.get(id).equals(document))
+                return id;
+        return -1;
+    }
+
+    /**
+     * Set the tag's node
+     * @param node The node
+     */
     public void setNode(Node node) {
         this.node = node;
     }
@@ -66,12 +88,12 @@ public class Tag {
     public static List<Tag> getTags(List<String> tags){
         List<Tag> result = new ArrayList<>();
         for(String tag: tags){
-            result.add(new Tag(0, null, tag, ""));
+            result.add(new Tag(0, tag, ""));
         }
         return result;
     }
 
-    void removeDocument(Document document) {
-        documents.remove(document);
+    void removeDocument(int id) {
+        documents.remove(id);
     }
 }

@@ -58,6 +58,10 @@ public class App extends Application {
         });
     }
 
+    /**
+     * Set the scene to the add document scene
+     * @throws IOException if the scene could not be loaded
+     */
     public void setAddDocumentScene() throws IOException {
         // Load AddDocument scene
         FXMLLoader loader = new FXMLLoader(App.class.getResource("AddDocument.fxml"));
@@ -65,6 +69,10 @@ public class App extends Application {
         primaryStage.setScene(scene);
     }
 
+    /**
+     * Set the scene to the add tag scene
+     * @throws IOException if the scene could not be loaded
+     */
     public void setAddTagScene() throws IOException {
         // Load AddTag scene
         FXMLLoader loader = new FXMLLoader(App.class.getResource("AddTag.fxml"));

@@ -84,15 +84,21 @@ public class Document {
         description = text;
     }
 
-    public void setTags(List<String> tags) {
-        for (Tag tag : this.tags)
-            if(!tags.contains(tag.getName()))
-                tag.removeDocument(this);
+    /**
+     * Set the tags of the document
+     * @param tags Tags to be set
+     * @return Old tags
+     */
+    public List<Tag> setTags(List<String> tags) {
+        List<Tag> oldTags = new ArrayList<>(this.tags);
 
+        // Remove all tags
         this.tags.clear();
+        // Add all new tags
         for (String tag : tags)
             this.tags.add(archive.getTagTree().getNode(tag).getData());
 
+        return oldTags;
     }
 
     public String getDescription() {

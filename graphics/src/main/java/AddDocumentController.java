@@ -39,6 +39,9 @@ public class AddDocumentController implements Initializable {
         AddDocumentController.app = appApp;
     }
 
+    /**
+     * Opens a file chooser and sets the selected file
+     */
     @FXML
     private void chooseFile() {
         FileChooser fileChooser = new FileChooser();
@@ -60,6 +63,9 @@ public class AddDocumentController implements Initializable {
 
     }
 
+    /**
+     * Adds the document to the archive
+     */
     @FXML
     private void add(){
         try {
@@ -90,6 +96,9 @@ public class AddDocumentController implements Initializable {
         initTagsComboBox();
     }
 
+    /**
+     * Initializes the tag's combo box
+     */
     void initTagsComboBox(){
         // Clear
         //noinspection DuplicatedCode

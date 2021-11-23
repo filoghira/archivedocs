@@ -8,7 +8,6 @@ import org.controlsfx.control.CheckComboBox;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class EditDocumentController implements Initializable {
@@ -24,28 +23,34 @@ public class EditDocumentController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Set the document name
         docName.setText(selectedDocument.getName());
+        // Set the document description
         docDesc.setText(selectedDocument.getDescription());
+        // Set the document path
         docPath.setText(String.valueOf(selectedDocument.getPath()));
 
-        for (Tag t : selectedDocument.getTags()) {
-            tagsComboBox.getItems().add(t.getName());
-            tagsComboBox.getCheckModel().check(t.getName());
-        }
+        // Set the tags list
+        for (Node t : archive.getTagTree().getNodes())
+            tagsComboBox.getItems().add(t.getData().getName());
 
+        // Set the selected tags
+        for (Tag t : selectedDocument.getTags())
+            tagsComboBox.getCheckModel().check(t.getName());
+
+        // Add listener to the tags list
         tagsComboBox.getCheckModel().getCheckedItems().addListener(
                 (ListChangeListener<String>) c -> selectedTags = tagsComboBox.getCheckModel().getCheckedItems()
         );
     }
 
+    /**
+     * Save the changes made to the document
+     */
     @FXML
     public void save() {
-        archive.editDocument(
-                selectedDocument,
-                docName.getText(),
-                docDesc.getText(),
-                new ArrayList<>(selectedTags)
-        );
+        archive.editDocument(selectedDocument, docName.getText(), docDesc.getText(), selectedTags);
+        // Go back to the file overview scene
         goBack();
     }
 
@@ -59,6 +64,12 @@ public class EditDocumentController implements Initializable {
         }
     }
 
+    /**
+     * Initialize the controller
+     * @param document The document to edit
+     * @param app The application
+     * @param archive The archive
+     */
     public static void init(Document document, App app, Archive archive) {
         EditDocumentController.selectedDocument = document;
         EditDocumentController.app = app;
