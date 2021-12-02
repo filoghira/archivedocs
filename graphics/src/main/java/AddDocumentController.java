@@ -6,6 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.stage.FileChooser;
 import org.controlsfx.control.CheckComboBox;
 
@@ -94,6 +95,10 @@ public class AddDocumentController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initTagsComboBox();
+
+        // Text validation: letter, number or underscore
+        docName.setTextFormatter(new TextFormatter<>(change ->
+                (change.getControlNewText().matches("[a-zA-Z_0-9]{0,18}$")) ? change : null));
     }
 
     /**
