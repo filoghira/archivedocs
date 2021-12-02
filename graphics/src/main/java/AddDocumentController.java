@@ -75,11 +75,15 @@ public class AddDocumentController implements Initializable {
                 for(String t : selectedTags)
                     tags.add(archive.getTagTree().getNode(t).getData());
 
+            if(selectedFile == null) throw new IOException("No file selected");
+
             archive.addDocument(tags, selectedFile.getName(), Path.of(selectedFile.getPath()), docDesc.getText());
         } catch (FileNotFoundException e) {
             error.setText("The document has been moved");
         } catch (FileAlreadyInArchiveException e) {
             error.setText("The document is already in the archive");
+        } catch (IOException e) {
+            error.setText("The document is not found");
         }
     }
 
