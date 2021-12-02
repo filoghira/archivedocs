@@ -52,10 +52,16 @@ public class MainController implements Initializable
         List<Node> children = tags.getChildren();
         // If it's the last item just add it
         if(children.isEmpty())
-            rootItem.getChildren().add(new TreeItem<>(tags.getData().getName().replace("_", " ")));
+            rootItem.getChildren().add(
+                    new TreeItem<>(
+                            tags.getData().getName().replace("_", " ")
+                    )
+            );
         else{
             // Otherwise, add each child to the root
-            TreeItem<String> son = new TreeItem<>(tags.getData().getName().replace("_", " "));
+            TreeItem<String> son = new TreeItem<>(
+                    tags.getData().getName().replace("_", " ")
+            );
             for (Node n : children)
                 addNodes(son, n);
             rootItem.getChildren().add(son);
@@ -94,6 +100,7 @@ public class MainController implements Initializable
     private void select(){
         try {
             String tagName = tagTree.getSelectionModel().getSelectedItem().getValue();
+            tagName = tagName.replace(" ", "_");
             selectedTag = archive.getTagTree().getNode(tagName).getData();
             updateDocumentTable(archive.getTagTree().getNode(tagName).getData());
         }catch (NullPointerException e){

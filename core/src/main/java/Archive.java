@@ -378,6 +378,9 @@ public class Archive {
     }
 
     void editTag(Tag tag, String newName, String newDesc, String newParent){
+
+        newName = newName.replace(" ", "_");
+
         // Update the name
         if(!newName.equals(tag.getName()) && !tagTree.nodeExists(newName)) {
             db.updateRow(TagsTable.name, tag.getID(), TagsTable.tagName, newName);

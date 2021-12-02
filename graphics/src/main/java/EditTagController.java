@@ -22,7 +22,7 @@ public class EditTagController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        tagName.setText(tag.getName());
+        tagName.setText(tag.getName().replace("_", " "));
         tagDesc.setText(tag.getDescription());
         update();
         Tag parentTag = tag.getParent();
