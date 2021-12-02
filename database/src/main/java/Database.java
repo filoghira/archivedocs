@@ -195,6 +195,43 @@ public class Database {
         }
     }
 
+    public void updateRow(String tableName, int id, Column parameter, String value){
+        // Prepare the query
+        StringBuilder query = new StringBuilder("UPDATE " + tableName + " SET " + parameter.name() + "=");
+        if(parameter.type().equals("INT"))
+            query.append(value);
+        else
+            query.append(General.quote(value));
+        query.append(" WHERE ID="+id);
+
+        // Prepare the statement
+        PreparedStatement statement;
+        try {
+            // Execute the statement and get as result the ID of the item that has just been added
+            System.out.println("Executing query:\n" + query);
+            statement = connection.prepareStatement(query.toString(), PreparedStatement.RETURN_GENERATED_KEYS );
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            SQLUtils.printSQLException(e);
+        }
+    }
+
+    public void renameTable(String oldName, String newName){
+        // Prepare the query
+        StringBuilder query = new StringBuilder("RENAME TABLE " + oldName + " TO " + newName);
+
+        // Prepare the statement
+        PreparedStatement statement;
+        try {
+            // Execute the statement and get as result the ID of the item that has just been added
+            System.out.println("Executing query:\n" + query);
+            statement = connection.prepareStatement(query.toString(), PreparedStatement.RETURN_GENERATED_KEYS );
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            SQLUtils.printSQLException(e);
+        }
+    }
+
     /**
      *
      * @param tableName Name of the table

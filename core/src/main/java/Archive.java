@@ -376,4 +376,28 @@ public class Archive {
             tag.removeDocument(id);
         }
     }
+
+    void editTag(Tag tag, String newName, String newDesc, String newParent){
+        // Update the name
+        if(!newName.equals(tag.getName()) && !tagTree.nodeExists(newName)) {
+            db.updateRow(TagsTable.name, tag.getID(), TagsTable.tagName, newName);
+            db.renameTable(tag.getName(), newName);
+            tag.setName(newName);
+        }
+
+        // Update the description
+        if(!newDesc.equals(tag.getDescription())) {
+            tag.setDescription(newDesc);
+            db.updateRow(TagsTable.name, tag.getID(), TagsTable.tagDesc, newDesc);
+        }
+
+        // Update the parent
+        if(newParent == null) return;
+        Tag newParentVal = tagTree.getNode(newParent).getData();
+        if(newParentVal != tag.getParent()) {
+            tag.setParent(newParentVal);
+            db.updateRow(TagsTable.name, tag.getID(), TagsTable.tagParentID, String.valueOf(newParentVal.getID()));
+        }
+
+    }
 }

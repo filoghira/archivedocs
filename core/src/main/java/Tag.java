@@ -96,4 +96,24 @@ public class Tag {
     void removeDocument(int id) {
         documents.remove(id);
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Tag getParent(){
+        return node.getParent().getData();
+    }
+
+    public void setParent(Tag newParent) {
+        node.setParent(newParent.getNode());
+    }
 }

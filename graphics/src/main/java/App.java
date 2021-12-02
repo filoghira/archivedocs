@@ -97,5 +97,12 @@ public class App extends Application {
         Scene scene = new Scene(loader.load());
         primaryStage.setScene(scene);
     }
+
+    public void setEditTagScene(Tag selectedTag) throws IOException {
+        EditTagController.init(selectedTag, this, archive);
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("EditTag.fxml"));
+        Scene scene = new Scene(loader.load());
+        primaryStage.setScene(scene);
+    }
 }
 

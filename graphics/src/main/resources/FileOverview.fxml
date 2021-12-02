@@ -51,7 +51,8 @@
                                     <contextMenu>
                                        <ContextMenu>
                                          <items>
-                                           <MenuItem mnemonicParsing="false" onAction="#removeTag" text="Delete" />
+                                             <MenuItem mnemonicParsing="false" onAction="#editTag" text="Edit" />
+                                             <MenuItem mnemonicParsing="false" onAction="#removeTag" text="Delete" />
                                          </items>
                                        </ContextMenu>
                                     </contextMenu></TreeView>

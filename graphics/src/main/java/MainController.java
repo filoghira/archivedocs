@@ -130,6 +130,18 @@ public class MainController implements Initializable
         init();
     }
 
+    @FXML
+    private void editTag(){
+        select();
+        if(selectedTag!=null) {
+            try {
+                app.setEditTagScene(selectedTag);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     void init(){
         setTagTree(archive.getTagTree());
         updateDocumentTable(null);
