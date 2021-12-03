@@ -102,7 +102,7 @@ public class AddDocumentController implements Initializable {
 
         // Text validation: letter, number or underscore
         docName.setTextFormatter(new TextFormatter<>(change ->
-                (change.getControlNewText().matches("[a-zA-Z_0-9]{0,18}$")) ? change : null));
+                (change.getControlNewText().matches("[a-zA-Z_0-9\s]{0,260}$")) ? change : null));
     }
 
     /**

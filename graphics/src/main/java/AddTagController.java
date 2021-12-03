@@ -23,6 +23,11 @@ public class AddTagController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        // Text validation: letter, number or underscore
+        tagName.setTextFormatter(new TextFormatter<>(change ->
+                (change.getControlNewText().matches("[a-zA-Z_0-9\s]{0,128}$")) ? change : null));
+
         update();
     }
 

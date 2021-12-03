@@ -4,6 +4,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import org.controlsfx.control.CheckComboBox;
 
 import java.io.IOException;
@@ -42,6 +43,10 @@ public class EditDocumentController implements Initializable {
         tagsComboBox.getCheckModel().getCheckedItems().addListener(
                 (ListChangeListener<String>) c -> selectedTags = tagsComboBox.getCheckModel().getCheckedItems()
         );
+
+        // Text validation: letter, number or underscore
+        docName.setTextFormatter(new TextFormatter<>(change ->
+                (change.getControlNewText().matches("[a-zA-Z_0-9\s]{0,260}$")) ? change : null));
     }
 
     /**
