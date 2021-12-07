@@ -48,6 +48,12 @@ public class Archive {
         if(documentExists(hash))
             throw new FileAlreadyInArchiveException("The file named as "+name+" and located in "+path+" does not exist");
 
+        // Create the data array to be given to the SQL query
+        String[][] data = DocumentsTable.getData(name, String.valueOf(path), hash, description, tempFile.length(), new Timestamp(tempFile.lastModified()));
+
+        String ext = name.split("\\.(?=[^.]+$)")[1];
+        name = name.split("\\.(?=[^.]+$)")[0];
+
         // Create the document
         Document document = new Document(
                 -2,
@@ -57,11 +63,9 @@ public class Archive {
                 hash,
                 description,
                 tempFile.length(),
+                ext,
                 new Timestamp(tempFile.lastModified()),
                 this);
-
-        // Create the data array to be given to the SQL query
-        String[][] data = DocumentsTable.getData(name, String.valueOf(path), hash, description, tempFile.length(), new Timestamp(tempFile.lastModified()));
 
         // Add the document to the db
         int id = db.addRow(DocumentsTable.name, data);
@@ -85,8 +89,6 @@ public class Archive {
             if(!Files.isDirectory(docsDir))
                 Files.createDirectories(docsDir);
             // Copy the file in the folder
-            if(name.contains(".pdf"))
-                name = name.replace(".pdf", "_"+id+".pdf");
             Files.copy(path, Path.of(docsDir + "\\" + name));
         } catch (IOException e) {
             e.printStackTrace();
@@ -139,7 +141,8 @@ public class Archive {
                     String hash = rs.getString(4);
                     String description = rs.getString(5);
                     long size = rs.getLong(6);
-                    Timestamp date = rs.getTimestamp(7);
+                    String ext = rs.getString(7);
+                    Timestamp date = rs.getTimestamp(8);
 
                     documents.put(id, new Document(id,
                             null,
@@ -148,6 +151,7 @@ public class Archive {
                             hash,
                             description,
                             size,
+                            ext,
                             date,
                             this
                     ));

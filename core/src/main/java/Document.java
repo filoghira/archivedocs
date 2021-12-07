@@ -8,26 +8,34 @@ import java.util.List;
 public class Document {
 
     private List<Tag> tags;
+
     private final String hash;
+
+    private int ID;
     private String name;
     private Path path;
     private Timestamp lastEdit;
     private long size;
     private String description;
-    private int ID;
+    private String ext;
+
     private Archive archive;
 
-    public Document(int ID, List<Tag> tags, String name, Path path, String hash, String description, long size, Timestamp lastEdit, Archive archive) {
+    public Document(int ID, List<Tag> tags, String name, Path path, String hash, String description, long size, String ext, Timestamp lastEdit, Archive archive) {
         this.ID = ID;
+
         this.tags = tags;
         if (tags == null)
             this.tags = new ArrayList<>();
+
         this.name = name;
         this.path = path;
         this.hash = hash;
         this.description = description;
         this.size = size;
+        this.ext = ext;
         this.lastEdit = lastEdit;
+
         this.archive = archive;
     }
 
