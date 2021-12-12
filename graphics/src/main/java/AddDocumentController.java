@@ -54,7 +54,12 @@ public class AddDocumentController implements Initializable {
                 else{
                     error.setText("");
                     this.selectedFile = selectedFile;
-                    docName.setText(selectedFile.getName().substring(0, selectedFile.getName().lastIndexOf(".")));
+
+                    // Filter name with regex
+                    String fileName = selectedFile.getName().substring(0, selectedFile.getName().lastIndexOf("."));
+                    fileName = fileName.replaceAll("[^a-zA-Z_0-9\s]", "_");
+
+                    docName.setText(fileName);
                     docPath.setText(selectedFile.getPath());
                 }
             } catch (IOException e) {
@@ -77,7 +82,7 @@ public class AddDocumentController implements Initializable {
 
             if(selectedFile == null) throw new IOException("No file selected");
 
-            archive.addDocument(tags, selectedFile.getName(), Path.of(selectedFile.getPath()), docDesc.getText());
+            archive.addDocument(tags, selectedFile.getName(), Path.of(selectedFile.getPath()), docPath.getText());
         } catch (FileNotFoundException e) {
             error.setText("The document has been moved");
         } catch (FileAlreadyInArchiveException e) {
