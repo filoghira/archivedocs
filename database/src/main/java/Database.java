@@ -13,9 +13,7 @@ public class Database {
     private final String dbName;
     private Connection connection = null;
 
-    public static final String defaultFolder = "\\archivedocs\\";
-
-    public Database(String userName, String password)
+    public Database(String userName, String password, String defaultFolder)
     {
 
         // Set derby preallocator to 1
@@ -25,15 +23,13 @@ public class Database {
 
         try{
 
-            String homePath = General.homePath() + defaultFolder;
-
             // If the main directory where the databases are stored does not exist, create it
-            Path archivesDir = Paths.get(homePath);
+            Path archivesDir = Paths.get(defaultFolder);
             if(!Files.isDirectory(archivesDir))
                 Files.createDirectories(archivesDir);
 
             // Try to connect to the database. If the connection fails it creates a new database
-            connection = DriverManager.getConnection(protocol + homePath + "\\" + userName
+            connection = DriverManager.getConnection(protocol + defaultFolder + "\\" + userName
                     + ";create=true"
                     + ";user=" + userName
                     + ";password=" + password);

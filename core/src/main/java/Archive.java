@@ -16,10 +16,11 @@ public class Archive {
     private HashMap<Integer, Document> documents;
     private Node tagTree = new Node(null);
     private Database db;
-    private static final String documentsStorage = "\\docs";
+    private final Settings settings;
 
-    public Archive(String username, String password){
-        db = new Database(username, password);
+    public Archive(String username, String password, Settings settings){
+        this.settings = settings;
+        db = new Database(username, password, settings.getDatabaseLocation());
         init();
     }
 
@@ -85,7 +86,7 @@ public class Archive {
 
         try {
             // Check if the folder where documents are stored has already been created
-            Path docsDir = Paths.get(General.homePath() + Database.defaultFolder + documentsStorage);
+            Path docsDir = Paths.get(settings.getDatabaseStorageLocation());
             if(!Files.isDirectory(docsDir))
                 Files.createDirectories(docsDir);
             // Copy the file in the folder
@@ -113,7 +114,7 @@ public class Archive {
         db.deleteRow(DocumentsTable.name, document.getID());
 
         // Remove the document from the file system
-        File file = new File(General.homePath() + Database.defaultFolder + Archive.documentsStorage + "\\" + document.getName());
+        File file = new File(settings.getDatabaseStorageLocation() + "\\" + document.getName());
 
         if(file.exists())
             if(!file.delete())

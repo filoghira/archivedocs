@@ -13,11 +13,16 @@ public class App extends Application {
     private Stage primaryStage;
     private Archive archive;
 
+    public static final String defaultFolder = "\\archivedocs\\";
+
     public App(){}
 
     @Override
     public void start(Stage primaryStage){
-        archive = new Archive("test", "");
+
+        Settings settings = new Settings(General.homePath() + defaultFolder, "user.properties");
+
+        archive = new Archive("test", "", settings);
 
         MainController.setArchive(archive);
         MainController.setMainApp(this);
