@@ -113,7 +113,7 @@ public class Archive {
         db.deleteRow(DocumentsTable.name, document.getID());
 
         // Remove the document from the file system
-        File file = document.getPath().toFile();
+        File file = new File(General.homePath() + Database.defaultFolder + Archive.documentsStorage + "\\" + document.getName());
 
         if(file.exists())
             if(!file.delete())

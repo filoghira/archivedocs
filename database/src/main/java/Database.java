@@ -13,7 +13,7 @@ public class Database {
     private final String dbName;
     private Connection connection = null;
 
-    public static final String defaultFolder = "\\archivedocs";
+    public static final String defaultFolder = "\\archivedocs\\";
 
     public Database(String userName, String password)
     {
@@ -202,7 +202,7 @@ public class Database {
             query.append(value);
         else
             query.append(General.quote(value));
-        query.append(" WHERE ID="+id);
+        query.append(" WHERE ID=").append(id);
 
         // Prepare the statement
         PreparedStatement statement;
