@@ -12,6 +12,7 @@ repositories {
 
 dependencies {
     implementation 'org.controlsfx:controlsfx:11.1.0'
+    implementation 'org.apache.commons:commons-configuration2:2.7'
     implementation project(':core')
     implementation project(':utils')
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'

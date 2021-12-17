@@ -37,7 +37,7 @@ public class App extends Application {
 
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Archive");
-        this.primaryStage.getIcons().add(new Image("icon.png"));
+        this.primaryStage.getIcons().add(new Image("appIcon.png"));
 
         try {
             setFileOverviewScene();

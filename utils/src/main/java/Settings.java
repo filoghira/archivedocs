@@ -77,12 +77,9 @@ public class Settings {
         String location = config.getProperty("database.storage.location").toString();
 
         if(location.equals("default"))
-            location = this.location + "\\docs";
+            location = this.location + "docs";
 
         Path dir = Paths.get(location);
-
-        if(!Files.isDirectory(dir))
-            throw new IllegalArgumentException("Invalid directory");
 
         return location;
     }
