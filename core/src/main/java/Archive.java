@@ -200,13 +200,9 @@ public class Archive {
         Tag tag = new Tag(-2, name, description);
 
         // Add each document to the tag's own document list
-        if(documents != null) {
-            int i = 0;
-            while (i < documents.size()) {
-                documents.get(i).addTag(tag);
-                i++;
-            }
-        }
+        if(documents != null)
+            for(Document document : documents.values())
+                document.addTag(tag);
 
         // Add the document to the db
         tag.setID(db.addRow(TagsTable.name, TagsTable.getData(name, Integer.toString(getTagID(parentName)), description)));
