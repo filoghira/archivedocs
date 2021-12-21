@@ -2,43 +2,49 @@ import javafx.scene.image.Image;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 
 public class Icons {
 
     private final HashMap<String, Image> icons;
 
-    public Icons(String iconPath) {
-
-        File directory = new File(iconPath);
-        if (! directory.exists())
-            if(!directory.mkdir())
-                throw new IllegalArgumentException("Could not create directory: " + iconPath);
-
+    public Icons(String iconPath, HashMap<String, String> iconLinks) {
         icons = new HashMap<>();
-
-        final File folder = new File(iconPath);
-
-        try {
-            loadIcons(folder);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void loadIcons(final File folder) throws IOException {
-        File[] files = folder.listFiles();
-
-        if(files == null)
-            return;
-
-        for (final File fileEntry : files) {
-            String filename = fileEntry.getName();
-            icons.put(filename.substring(0, filename.lastIndexOf(".")), new Image(fileEntry.getAbsolutePath(), 16, 16, true, true));
-        }
+        init(iconPath, iconLinks);
     }
 
     public Image getIcon(final String extension) {
-        return icons.get(extension);
+        if (icons.containsKey(extension))
+            return icons.get(extension);
+        else
+            return icons.get("default");
+    }
+
+    void init(String iconPath, HashMap<String, String> links) {
+        File directory = new File(iconPath);
+        if (! directory.exists()) {
+            // Create the directory
+            if (!directory.mkdir())
+                throw new IllegalArgumentException("Could not create directory: " + iconPath);
+        }
+
+        // Given the icons' links, update the files
+        for (String key : links.keySet()) {
+            String value = links.get(key);
+            String path = iconPath + "\\"+ key + ".png";
+            try {
+                Files.copy(new URL(value).openStream(),Paths.get(path));
+            }catch (FileAlreadyExistsException e) {
+                // Do nothing
+            }catch (IOException e) {
+                e.printStackTrace();
+            }finally {
+                icons.put(key, new Image(path, 16, 16, true, true));
+            }
+        }
     }
 }

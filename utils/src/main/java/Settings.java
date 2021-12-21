@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 
 public class Settings {
 
@@ -131,6 +132,7 @@ public class Settings {
         config.setProperty("width", 800);
         config.setProperty("height", 600);
         config.setProperty("file.icons.location", "default");
+        config.setProperty("file.icons.extensions", "default");
 
         save();
     }
@@ -141,5 +143,17 @@ public class Settings {
         } catch (ConfigurationException e) {
             e.printStackTrace();
         }
+    }
+
+    public HashMap<String, String> getIconLinks() {
+        String[] links =  config.getStringArray("file.icons.links");
+        // Extract each link and create a hashmap
+        HashMap<String, String> icons = new HashMap<>();
+        for (String link : links) {
+            String[] temp = link.split(";");
+            icons.put(temp[0], temp[1]);
+        }
+
+        return icons;
     }
 }
