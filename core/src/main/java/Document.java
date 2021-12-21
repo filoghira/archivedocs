@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.nio.file.Path;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -13,13 +14,13 @@ public class Document {
 
     private int ID;
     private String name;
-    private Path path;
-    private Timestamp lastEdit;
-    private long size;
+    private final Path path;
+    private final Timestamp lastEdit;
+    private final long size;
     private String description;
-    private String ext;
+    private final String ext;
 
-    private Archive archive;
+    private final Archive archive;
 
     public Document(int ID, List<Tag> tags, String name, Path path, String hash, String description, long size, String ext, Timestamp lastEdit, Archive archive) {
         this.ID = ID;
@@ -115,5 +116,9 @@ public class Document {
 
     public List<Tag> getTags() {
         return tags;
+    }
+
+    public String getExt() {
+        return ext;
     }
 }

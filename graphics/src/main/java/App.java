@@ -24,7 +24,7 @@ public class App extends Application {
 
         archive = new Archive("test", "", settings);
 
-        MainController.setArchive(archive);
+        MainController.setup(archive);
         MainController.setMainApp(this);
 
         AddDocumentController.setArchive(archive);

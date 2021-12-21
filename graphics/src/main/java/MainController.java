@@ -1,14 +1,17 @@
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
 
 public class MainController implements Initializable
 {
@@ -18,11 +21,12 @@ public class MainController implements Initializable
     @FXML private TableColumn<Document, String> name;
     @FXML private TableColumn<Document, String> lastDate;
     @FXML private TableColumn<Document, String> size;
-    @FXML private TableColumn<Document, Image> icon;
+    @FXML private TableColumn<Document, ImageView> icon;
 
     private static Archive archive;
     private static App app;
     private static Tag selectedTag;
+    private static Icons icons;
 
     public static void setMainApp(App appApp){
         MainController.app = appApp;
@@ -34,7 +38,8 @@ public class MainController implements Initializable
             name.setCellValueFactory(new PropertyValueFactory<>("name"));
             lastDate.setCellValueFactory(new PropertyValueFactory<>("lastEdit"));
             size.setCellValueFactory(new PropertyValueFactory<>("size"));
-            // icon.setCellValueFactory(new PropertyValueFactory<>("icon"));
+            icon.setCellValueFactory(
+                    p -> new ReadOnlyObjectWrapper<>(new ImageView(icons.getIcon(p.getValue().getExt()))));
             init();
         }
     }
@@ -68,7 +73,7 @@ public class MainController implements Initializable
         }
     }
 
-    public static void setArchive(Archive archive){
+    public static void setup(Archive archive){
         MainController.archive = archive;
     }
 
@@ -152,6 +157,7 @@ public class MainController implements Initializable
     void init(){
         setTagTree(archive.getTagTree());
         updateDocumentTable(null);
+        icons = new Icons(archive.settings.getFileIconsLocation());
     }
 
     public void updateDocumentTable(Tag tag){

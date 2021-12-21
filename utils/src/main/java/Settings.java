@@ -99,6 +99,14 @@ public class Settings {
         return location;
     }
 
+    public String getFileIconsLocation() {
+        String temp = config.getProperty("file.icons.location").toString();
+
+        if (temp.equals("default"))
+            temp = "icons";
+        return location + temp;
+    }
+
     private void load() {
         Parameters params = new Parameters();
 
@@ -122,6 +130,7 @@ public class Settings {
         config.setProperty("database.storage.location", "default");
         config.setProperty("width", 800);
         config.setProperty("height", 600);
+        config.setProperty("file.icons.location", "default");
 
         save();
     }

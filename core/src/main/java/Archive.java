@@ -16,7 +16,7 @@ public class Archive {
     private HashMap<Integer, Document> documents;
     private Node tagTree = new Node(null);
     private Database db;
-    private final Settings settings;
+    public final Settings settings;
 
     public Archive(String username, String password, Settings settings){
         this.settings = settings;
@@ -175,12 +175,9 @@ public class Archive {
     public boolean documentExists(String hash){
         if(documents==null)
             return false;
-        int i=0;
-        while(i < documents.size()){
-            if(documents.get(i).compareHash(hash))
+        for(Document document : documents.values())
+            if(document.compareHash(hash))
                 return true;
-            i++;
-        }
         return false;
     }
 
