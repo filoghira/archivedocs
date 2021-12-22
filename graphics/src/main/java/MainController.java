@@ -1,4 +1,5 @@
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -7,9 +8,10 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -37,6 +39,13 @@ public class MainController implements Initializable
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if(tagTree!=null){
+
+            fileTable.setOnMouseClicked(event -> {
+                if (event.getButton()== MouseButton.PRIMARY && event.getClickCount() == 2) {
+                    open(fileTable.getSelectionModel().getSelectedItem());
+                }
+            });
+
             name.setCellValueFactory(new PropertyValueFactory<>("name"));
             lastDate.setCellValueFactory(new PropertyValueFactory<>("lastEdit"));
             size.setCellValueFactory(new PropertyValueFactory<>("size"));
@@ -57,18 +66,16 @@ public class MainController implements Initializable
     // Recursively creates a TreeItem for each tag and adds it to its root
     public static void addNodes(TreeItem<String> rootItem, Node tags){
         List<Node> children = tags.getChildren();
+
+        TreeItem<String> son = new TreeItem<>(
+                tags.getData().getName().replace("_", " ")
+        );
+
         // If it's the last item just add it
         if(children.isEmpty())
-            rootItem.getChildren().add(
-                    new TreeItem<>(
-                            tags.getData().getName().replace("_", " ")
-                    )
-            );
+            rootItem.getChildren().add(son);
         else{
             // Otherwise, add each child to the root
-            TreeItem<String> son = new TreeItem<>(
-                    tags.getData().getName().replace("_", " ")
-            );
             for (Node n : children)
                 addNodes(son, n);
             rootItem.getChildren().add(son);
@@ -158,7 +165,11 @@ public class MainController implements Initializable
 
     @FXML
     private void openDocument(){
-        Document d = fileTable.getSelectionModel().getSelectedItem();
+        open(fileTable.getSelectionModel().getSelectedItem());
+
+    }
+
+    private void open(Document d){
         if(d!=null) {
             try {
                 Desktop.getDesktop().open(d.getPath().toFile());
