@@ -8,6 +8,8 @@ import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 
+import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -148,6 +150,18 @@ public class MainController implements Initializable
         if(selectedTag!=null) {
             try {
                 app.setEditTagScene(selectedTag);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @FXML
+    private void openDocument(){
+        Document d = fileTable.getSelectionModel().getSelectedItem();
+        if(d!=null) {
+            try {
+                Desktop.getDesktop().open(d.getPath().toFile());
             } catch (IOException e) {
                 e.printStackTrace();
             }

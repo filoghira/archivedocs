@@ -73,6 +73,7 @@
                            <contextMenu>
                               <ContextMenu fx:id="fileContextMenu">
                                 <items>
+                                    <MenuItem mnemonicParsing="false" onAction="#openDocument" text="Open" />
                                     <MenuItem mnemonicParsing="false" onAction="#editDocument" text="Edit" />
                                     <MenuItem mnemonicParsing="false" onAction="#removeDocument" text="Delete" />
                                 </items>
