@@ -373,6 +373,14 @@ public class Archive {
             db.deleteRow(tag.getName(), id);
             tag.removeDocument(id);
         }
+
+        // Add the document to the new tags
+        for (String tagName : newTags) {
+            Tag tag = tagTree.getNode(tagName).getData();
+            if(!tag.contains(d))
+                tag.addDocument(d.getID(), d);
+            db.addRow(tag.getName(), TagColumns.getData(d.getID()));
+        }
     }
 
     void editTag(Tag tag, String newName, String newDesc, String newParent){

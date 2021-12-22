@@ -132,7 +132,6 @@ public class Settings {
         config.setProperty("width", 800);
         config.setProperty("height", 600);
         config.setProperty("file.icons.location", "default");
-        config.setProperty("file.icons.extensions", "default");
 
         save();
     }
