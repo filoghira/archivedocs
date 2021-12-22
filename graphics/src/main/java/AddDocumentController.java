@@ -82,7 +82,7 @@ public class AddDocumentController implements Initializable {
 
             if(selectedFile == null) throw new IOException("No file selected");
 
-            archive.addDocument(tags, selectedFile.getName(), Path.of(selectedFile.getPath()), docPath.getText());
+            archive.addDocument(tags, selectedFile.getName(), Path.of(selectedFile.getPath()), docDesc.getText());
         } catch (FileNotFoundException e) {
             error.setText("The document has been moved");
         } catch (FileAlreadyInArchiveException e) {
