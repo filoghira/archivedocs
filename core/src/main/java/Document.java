@@ -103,9 +103,11 @@ public class Document {
 
         // Remove all tags
         this.tags.clear();
+
         // Add all new tags
-        for (String tag : tags)
-            this.tags.add(archive.getTagTree().getNode(tag).getData());
+        if (tags != null)
+            for (String tag : tags)
+                this.tags.add(archive.getTagTree().getNode(tag).getData());
 
         return oldTags;
     }
