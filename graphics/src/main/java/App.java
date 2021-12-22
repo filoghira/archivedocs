@@ -7,6 +7,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class App extends Application {
 
@@ -19,6 +22,15 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage){
+
+        Path archivesDir = Paths.get(General.homePath() + defaultFolder);
+        if(!Files.isDirectory(archivesDir)) {
+            try {
+                Files.createDirectories(archivesDir);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         Settings settings = new Settings(General.homePath() + defaultFolder, "user.properties");
 
