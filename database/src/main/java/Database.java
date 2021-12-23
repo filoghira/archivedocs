@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,7 +30,7 @@ public class Database {
                 Files.createDirectories(archivesDir);
 
             // Try to connect to the database. If the connection fails it creates a new database
-            connection = DriverManager.getConnection(protocol + defaultFolder + "\\" + userName
+            connection = DriverManager.getConnection(protocol + defaultFolder + File.separator + userName
                     + ";create=true"
                     + ";user=" + userName
                     + ";password=" + password);

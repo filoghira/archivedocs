@@ -6,6 +6,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 
 public class App extends Application {
@@ -13,7 +14,7 @@ public class App extends Application {
     private Stage primaryStage;
     private Archive archive;
 
-    public static final String defaultFolder = "\\archivedocs\\";
+    public static final String defaultFolder = File.separator + "archivedocs" + File.separator;
 
     public App(){}
 
