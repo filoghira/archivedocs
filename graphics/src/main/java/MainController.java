@@ -171,11 +171,13 @@ public class MainController implements Initializable
 
     private void open(Document d){
         if(d!=null) {
-            try {
-                Desktop.getDesktop().open(d.getPath().toFile());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            java.awt.EventQueue.invokeLater(() -> {
+                try {
+                    Desktop.getDesktop().open(d.getPath().toFile());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
         }
     }
 
