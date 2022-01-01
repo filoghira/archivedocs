@@ -86,11 +86,11 @@ public class Archive {
 
         try {
             // Check if the folder where documents are stored has already been created
-            Path docsDir = Paths.get(settings.getProp("database.storage.location"));
+            Path docsDir = Paths.get(settings.getProp("database.location") + settings.getProp("database.storage.location"));
             if(!Files.isDirectory(docsDir))
                 Files.createDirectories(docsDir);
             // Copy the file in the folder
-            Files.copy(path, Path.of(docsDir + "\\" + name));
+            Files.copy(path, Path.of(docsDir + File.separator + name));
         } catch (IOException e) {
             e.printStackTrace();
         }
