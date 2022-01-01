@@ -43,7 +43,7 @@ public class Icons {
             }catch (IOException e) {
                 e.printStackTrace();
             }finally {
-                icons.put(key, new Image(path, 16, 16, true, true));
+                icons.put(key, new Image("file:///" + path, 16, 16, true, true));
             }
         }
     }
