@@ -20,7 +20,7 @@ public class Archive {
 
     public Archive(String username, String password, Settings settings){
         this.settings = settings;
-        db = new Database(username, password, settings.getDatabaseLocation());
+        db = new Database(username, password, settings.getProp("database.location"));
         init();
     }
 
@@ -86,7 +86,7 @@ public class Archive {
 
         try {
             // Check if the folder where documents are stored has already been created
-            Path docsDir = Paths.get(settings.getDatabaseStorageLocation());
+            Path docsDir = Paths.get(settings.getProp("database.storage.location"));
             if(!Files.isDirectory(docsDir))
                 Files.createDirectories(docsDir);
             // Copy the file in the folder
@@ -114,7 +114,7 @@ public class Archive {
         db.deleteRow(DocumentsTable.name, document.getID());
 
         // Remove the document from the file system
-        File file = new File(settings.getDatabaseStorageLocation() + "\\" + document.getName());
+        File file = new File(settings.getProp("database.storage.location") + File.separator + document.getName());
 
         if(file.exists())
             if(!file.delete())

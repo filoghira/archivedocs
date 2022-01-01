@@ -184,7 +184,7 @@ public class MainController implements Initializable
     void init(){
         setTagTree(archive.getTagTree());
         updateDocumentTable(null);
-        icons = new Icons(archive.settings.getFileIconsLocation(),archive.settings.getIconLinks());
+        icons = new Icons(archive.settings.getProp("database.location") + archive.settings.getProp("file.icons.location"),archive.settings.getPropList("file.icons.links"));
     }
 
     public void updateDocumentTable(Tag tag){

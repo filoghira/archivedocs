@@ -10,18 +10,23 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class Settings {
 
-    private Configuration config;
+    private Configuration config, defaultConfig;
     private final String location;
     private final String filename;
     private FileBasedConfigurationBuilder<FileBasedConfiguration> builder;
+
+    private HashMap<String, HashMap<String, String>> settings;
 
     public Settings(String location, String filename) {
 
         this.location = location;
         this.filename = filename;
+
+        defaultConfig = load("default.properties");
 
         Path dir = Paths.get(location + filename);
 
@@ -31,128 +36,145 @@ public class Settings {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            template();
         }else
-            load();
+            config = load(location + filename);
 
+        loadSettings();
     }
 
-    public void setDatabaseLocation(String location) {
-        Path dir = Paths.get(location);
+    void setProp(String key, String value) {
+        if (!config.containsKey(key))
+            return;
 
-        if(!Files.isDirectory(dir))
-            throw new IllegalArgumentException("Invalid directory");
-
-        config.setProperty("database.location", location);
-
+        config.setProperty(key, value);
+        settings.get(key).put(key, value);
         save();
     }
 
-    public void setWindowSize(int width, int height) {
+    void setPropList(String key, HashMap<String, String> value) {
+        if (!config.containsKey(key))
+            return;
 
-        // Check if the window size is valid
-        if(width < 600 || height < 400)
-            throw new IllegalArgumentException("Invalid window size");
-
-        config.setProperty("width", width);
-        config.setProperty("height", height);
-
+        config.setProperty(key, value);
+        settings.put(key, value);
         save();
     }
 
-    public String getDatabaseLocation() {
-        String location = config.getProperty("database.location").toString();
-
-        if(location.equals("default"))
-            location = this.location;
-
-        Path dir = Paths.get(location);
-
-        if(!Files.isDirectory(dir))
-            throw new IllegalArgumentException("Invalid directory");
-
-        return location;
+    /**
+     * Get a setting from the config file that has a list of values
+     * @param key
+     * @return
+     */
+    public HashMap<String, String> getPropList(String key) {
+        return settings.get(key);
     }
 
-    public String getDatabaseStorageLocation() {
-        String location = config.getProperty("database.storage.location").toString();
-
-        if(location.equals("default"))
-            location = this.location + "docs";
-
-        Path dir = Paths.get(location);
-
-        return location;
+    /**
+     * Get a setting from the config file
+     * @param key
+     * @return
+     */
+    public String getProp(String key) {
+        return settings.get(key).get(key);
     }
 
-    public int[] getWindowSize() {
-        int width = Integer.parseInt(config.getProperty("width").toString());
-        int height = Integer.parseInt(config.getProperty("height").toString());
+    /**
+     * Returns the default value for a setting
+     * @param key
+     * @return
+     */
+    private String getDefault(String key) {
+        String value = defaultConfig.getString(key);
 
-        // Check if the window size is valid
-        if(width < 600 || height < 400)
-            throw new IllegalArgumentException("Invalid window size");
+        switch (value) {
+            case "default_location":
+                return location;
+        }
 
-        return new int[] {width, height};
+        return value;
     }
 
-    public String getLocation() {
-        return location;
+    /**
+     * Loads the settings from the config file
+     */
+    private void loadSettings() {
+        settings = new HashMap<>();
+
+        // For each setting in the config file
+        Iterator<String> keys = config.getKeys();
+        while(keys.hasNext()) {
+
+            // Get the key
+            String key = keys.next();
+            // Get the value
+            String value = config.getString(key);
+
+            HashMap<String, String> values = new HashMap<>();
+
+            // Split the list of values (if it is a list)
+            String[] props = value.split(";");
+            // For each value in the list
+            for (String prop : props) {
+                // Split the key and value
+                String[] pair = prop.split("=");
+
+                // Prepare the key and value
+                String newKey = key, newValue = pair[0];
+
+                // If it's a couple, set the key and value
+                if(pair.length > 1)
+                {
+                    newKey = pair[0];
+                    // Check for default
+                    if (pair[1].equals("default"))
+                        newValue = getDefault(key+"."+pair[1]);
+                    else
+                        newValue = pair[1];
+                }
+
+                // Check for default
+                if (newValue.equals("default"))
+                    newValue = getDefault(key);
+
+                // Add the key and value to the list
+                values.put(newKey, newValue);
+            }
+
+            // Add the list to the settings
+            settings.put(key, values);
+        }
     }
 
-    public String getFileIconsLocation() {
-        String temp = config.getProperty("file.icons.location").toString();
-
-        if (temp.equals("default"))
-            temp = "icons";
-        return location + temp;
-    }
-
-    private void load() {
+    /**
+     * Loads a config file
+     * @param fileName Path to the file
+     * @return
+     */
+    private Configuration load(String fileName) {
         Parameters params = new Parameters();
 
         builder =new FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class)
                 .configure(params.properties()
-                        .setFileName(location + filename));
+                        .setFileName(fileName));
         try
         {
-            config = builder.getConfiguration();
+            return builder.getConfiguration();
         }
         catch(ConfigurationException cex)
         {
             cex.printStackTrace();
         }
+        return null;
     }
 
-    private void template() {
-        load();
-
-        config.setProperty("database.location", "default");
-        config.setProperty("database.storage.location", "default");
-        config.setProperty("width", 800);
-        config.setProperty("height", 600);
-        config.setProperty("file.icons.location", "default");
-
-        save();
-    }
-
+    /**
+     * Saves the config file
+     */
     private void save() {
         try {
             builder.save();
         } catch (ConfigurationException e) {
             e.printStackTrace();
         }
-    }
-
-    public HashMap<String, String> getIconLinks() {
-        String[] links =  config.getStringArray("file.icons.links");
-        // Extract each link and create a hashmap
-        HashMap<String, String> icons = new HashMap<>();
-        for (String link : links) {
-            String[] temp = link.split(";");
-            icons.put(temp[0], temp[1]);
-        }
-
-        return icons;
     }
 }
