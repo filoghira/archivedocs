@@ -35,7 +35,7 @@ public class Icons {
         // Given the icons' links, update the files
         for (String key : links.keySet()) {
             String value = links.get(key);
-            String path = iconPath + "\\"+ key + ".png";
+            String path = iconPath + File.separator + key + ".png";
             try {
                 Files.copy(new URL(value).openStream(),Paths.get(path));
             }catch (FileAlreadyExistsException e) {

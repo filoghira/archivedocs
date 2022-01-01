@@ -12,6 +12,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -184,7 +185,7 @@ public class MainController implements Initializable
     void init(){
         setTagTree(archive.getTagTree());
         updateDocumentTable(null);
-        icons = new Icons(archive.settings.getProp("database.location") + archive.settings.getProp("file.icons.location"),archive.settings.getPropList("file.icons.links"));
+        icons = new Icons(archive.settings.getProp("database.location") + File.separator + archive.settings.getProp("file.icons.location"),archive.settings.getPropList("file.icons.links"));
     }
 
     public void updateDocumentTable(Tag tag){

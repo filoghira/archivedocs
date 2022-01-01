@@ -6,8 +6,8 @@ import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,20 +26,26 @@ public class Settings {
         this.location = location;
         this.filename = filename;
 
+        setupConfigFile();
+
         defaultConfig = load("default.properties");
+        config = load(location + filename);
 
-        Path dir = Paths.get(location + filename);
+        loadSettings();
+    }
 
-        if(!Files.exists(dir)) {
+    void setupConfigFile() {
+        // Check if config file exists
+        if(!Files.exists(Paths.get(location + filename))) {
+            // Create the config file
+
             try {
-                Files.createFile(dir);
+                InputStream input = getClass().getResourceAsStream("template.properties");
+                Files.copy(input, Paths.get(location + filename));
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }else
-            config = load(location + filename);
-
-        loadSettings();
+        }
     }
 
     void setProp(String key, String value) {
